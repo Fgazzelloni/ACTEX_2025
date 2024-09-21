@@ -1,0 +1,69 @@
+---
+title: "Introduction to R and Basic Data Analysis"
+subtitle: "ACTEX Learning - Lesson 1.1"
+author: "Federica Gazzelloni and Farid Flici"
+date: "2024/10/03"
+format: 
+  html:
+    toc: true
+editor: visual
+execute:
+  warning: false
+  message: false
+---
+
+## Set-up
+
+If you haven't already, please install R and RStudio on your computer:
+
+1.  Follow this link: <https://posit.co/download/rstudio-desktop/>
+
+-   Install R
+-   Install RStudio
+
+<center>
+
+![Setup RStudio-Desktop](images/01_setup.png)
+
+</center>
+
+\
+2. Open RStudio and install the necessary packages with the following command:
+
+```{r}
+#| eval: false
+install.packages("tidyverse")
+```
+
+## Introduction to R Programming Environment
+
+R is a programming language and statistical development environment widely used for data analysis, visualization, and statistical modeling. It is an open-source language that provides a wide range of functions and packages specific to data processing and statistics.
+
+R is particularly popular among statisticians, data analysts, and data scientists due to its power and flexibility in data processing and analysis. It comes with numerous statistical functions, data manipulation capabilities, and visualization tools, making it a versatile tool for exploring and analyzing data.
+
+## Learning Objectives
+
+-   Understand the R environment, basic syntax, data structures
+-   Learn essential R functions covering the basics of various actuarial concepts
+-   Manipulate and clean data using base R and the {tidyverse} framework
+-   Perform basic statistical analysis
+-   Gain first level hands-on data visualization experience with {ggplot2}
+
+With a good understanding of these concepts, you can start exploring advanced features of R based on your specific needs.
+
+------------------------------------------------------------------------
+
+## Useful Resources
+
+These are useful resources in case you get stuck or you just want to learn more about R:
+
+-   `help.start()`
+-   `?syntax`
+
+(hint. substitute syntax with your function)
+
+You can open a help page for any object that comes with R or with an R package. To open the help page, type a ? before the object's name and then run the command.
+
+-   BOOK: **R for Data Science** by Hadley Wickham and Garrett Grolemund. Available online at <https://r4ds.had.co.nz/>
+-   CRAN Task View: Actuarial Science: <https://cran.r-project.org/web/views/ActuarialScience.html>
+-   R/Insurance Series: For Everyone in Insurance or Actuarial Science: <https://www.r-consortium.org/r-insurance-series-for-everyone-in-insurance-or-actuarial-science>
