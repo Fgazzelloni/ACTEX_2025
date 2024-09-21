@@ -261,7 +261,8 @@ The datasets are from the `CASdatasets` R-package, which provides a collection o
 Data can be accessed by loading it into the R environment with the `load()` function.
 
 ```{r}
-load("data/freMTPLfreq.rda")
+# freMTPLfreq has been reduced to 1000 rows for demonstration purposes
+load("data/freMTPLfreq_1000.rda")
 load("data/freMTPLsev.rda")
 ```
 

@@ -5,3 +5,5 @@
 bunker
 Lesson1/data/CASdatasets
 Lesson2/data/CASdatasets
+*.html
+*_files
