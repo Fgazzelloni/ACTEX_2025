@@ -1,0 +1,32 @@
+---
+title: "Introduction to R and Basic Data Analysis"
+subtitle: "AFDP - ACTEX Learning - Lesson 2.1"
+author: "Federica Gazzelloni and Farid Flici"
+date: "2024/10/10"
+format: 
+  html:
+    toc: true
+editor: visual
+execute:
+  warning: false
+  message: false
+---
+
+## Introduction to Predictive Modeling
+
+In the first lesson of this course, we learned about the basics of R and how to perform basic data analysis. In this lesson, we will delve deeper into predictive modeling and practice using R functions in various actuarial contexts. We will also learn how to manage CSV files, explore R packages for data analysis, and apply our knowledge to a practical project.
+
+## Learning Objectives
+
+-   Utilize statistical modeling and simulation techniques
+-   Make R functions to use in various actuarial contests
+-   Practice managing csv files
+-   Learn about R packages for data analysis
+-   Apply learned R functions and concepts to a practical project
+
+R is particularly suited for predictive modeling in actuarial work because it supports complex statistical analysis, has a vast collection of libraries (`glm`, `rpart`, `randomForest`, `survival`), and offers extensive visualization tools to communicate results effectively. Traditional statistical methods (like GLMs) and modern machine learning techniques (like Gradient Boosted Trees - GBMs and decision trees), can be implemented all within the same environment.
+
+### Examples
+
+-   Building a linear regression model to predict a company’s sales based on advertising spend.
+-   Using a decision tree to classify whether a customer will churn based on demographic and behavioral data.

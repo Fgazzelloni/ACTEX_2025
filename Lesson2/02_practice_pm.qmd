@@ -1,0 +1,615 @@
+---
+title: "Introduction to R and Basic Data Analysis"
+subtitle: "AFDP - ACTEX Learning - Lesson 2.2"
+author: "Federica Gazzelloni and Farid Flici"
+date: "2024/10/10"
+format: 
+  html:
+    toc: true
+editor: visual
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| echo: false
+library(ggplot2)
+book_theme <- theme_minimal() + 
+  theme(plot.title=element_text(face="bold"))
+ggplot2::theme_set(book_theme)
+```
+
+# Getting into Practice with Predictive Modeling
+
+Predictive modeling is a specific, technical step within the broader process of predictive analytics. It involves creating a mathematical or machine learning model that can forecast future outcomes based on historical data. A predictive model is a representation of the relationships between variables (features) and the outcome you’re trying to predict (target). Various algorithms can be used to build these models, such as linear regression, decision trees, or neural networks.
+
+In actuarial science, predictive modeling is used to estimate future claims, analyze risk, and set insurance premiums. In this lesson, we will explore some practical examples of predictive modeling in actuarial contexts using R.
+
+# Predictive Data Modeling Workflow
+
+<center>
+
+![FlowChart made with {DiagrammeR} package](images/2.2_flowchart.png)
+
+</center>
+
+-   **Data Collection**: Gather relevant data on the variables you want to analyze. This data can come from internal sources (company databases) or external sources (public datasets).
+-   **Data Cleaning and Preparation**: Clean the data by handling missing values, removing duplicates, and transforming variables. Prepare the data for analysis by creating features and a target variable.
+-   **Exploratory Data Analysis (EDA)**: Explore the data to understand its structure, relationships, and patterns. Use visualizations and summary statistics to gain insights.
+-   **Model Selection**: Choose an appropriate predictive model based on the nature of the data and the problem you want to solve. Common models include linear regression, logistic regression, decision trees, and neural networks.
+-   **Model Training**: Split the data into training and testing sets. Train the model on the training data to learn the patterns in the data.
+-   **Model Evaluation**: Evaluate the model's performance using metrics like accuracy, precision, recall, or the area under the ROC curve. Adjust the model parameters if needed.
+
+# Example 1: Predictive Modeling with Insurance Data
+
+In this example, we will work with real-world insurance data to perform predictive modeling. The data is related to **medical malpractice – claims made** and contains information on **incurred losses**, **cumulative paid losses**, **earned premiums**, and **development lags**.
+
+## Data Collection
+
+The data is available in a `.CSV` file from the **Casualty Actuarial Society (CAS)** website. We will load the data into R for analysis. The data set contains run-off triangles. Upper and lower triangles data correspond to claims of accident year 1988 – 1997 with 10 years development lag.
+
+::: callout-tip
+The `codebook` for the data can be found at the following link: [Loss Reserving Data Pulled from NAIC Schedule P](https://www.casact.org/publications-research/research/research-resources/loss-reserving-data-pulled-naic-schedule-p)
+:::
+
+```{r}
+# Load necessary libraries
+library(tidyverse)
+```
+
+```{r}
+url <- "https://www.casact.org/sites/default/files/2021-04/medmal_pos.csv"
+df <- read_csv(file = url)
+```
+
+::: callout-tip
+Downloaded data is now available in the `Global Environment`. It can be saved as a `.CSV` file for future use with the following code:
+
+```{r}
+#| eval: false
+write.csv(df, "data/medmal_pos.csv")
+medmal_pos <- read.csv("data/medmal_pos.csv")
+```
+:::
+
+## Data Cleaning and Preparation
+
+```{r}
+dim(df);
+df %>% head() %>% glimpse()
+```
+
+```{r}
+df %>%
+  select(IncurLoss_F2, CumPaidLoss_F2, BulkLoss_F2, EarnedPremNet_F2) %>%
+  summary()
+```
+
+We can use the `summary()` function to get a quick overview of the data, including the mean, median, minimum, and maximum values for each variable, or the `count()` function to count the number of observations in the data.
+
+```{r}
+df %>%
+  select(DevelopmentLag) %>%
+  summary()
+```
+
+Then we create a tailored dataset containing only the claims with a development lag of 5 years or more:
+
+```{r}
+lag5plus <- df %>%
+  filter(DevelopmentLag >= 5) %>%
+  select(GRNAME, AccidentYear, IncurLoss_F2, 
+         CumPaidLoss_F2, EarnedPremNet_F2, DevelopmentLag) %>%
+  rename(IncurLoss = IncurLoss_F2,
+         CumPaidLoss = CumPaidLoss_F2,
+         EarnedPremNet = EarnedPremNet_F2) %>%
+  # the model will treat each year as an independent category.
+  mutate(AccidentYear = as.factor(AccidentYear))
+```
+
+```{r}
+lag5plus %>%
+  summary()
+```
+
+```{r}
+top_5GR <- lag5plus %>%
+  group_by(GRNAME) %>%
+  summarize(mean_IncurLoss = mean(IncurLoss),
+            mean_CumPaidLoss = mean(CumPaidLoss),
+            mean_diff = mean_IncurLoss - mean_CumPaidLoss) %>%
+  arrange(desc(mean_CumPaidLoss)) %>%
+  slice_head(n = 5)
+
+top_5GR
+```
+
+## Exploratory Data Analysis (EDA)
+
+We create a `scatterplot` for representing the relationship between `IncurLoss` and `CumPaidLoss` for both, the entire dataset and for claims with a development lag of 5 years or more:
+
+```{r}
+#| layout-ncol: 2
+# Plot 1
+ggplot(df, 
+       aes(x = IncurLoss_F2, y = CumPaidLoss_F2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(title = "Cumulative Paid Loss vs. Incurred Loss", 
+       x = "Incurred Loss", y = "Cumulative Paid Loss") 
+  
+# Plot2  
+# Claims with a development lag of 5 years or more
+ggplot(lag5plus, aes(x = IncurLoss, y = CumPaidLoss)) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "red") +
+  labs(title = "Cumulative Paid Loss vs. Incurred Loss", 
+       subtitle = "Development Lag >= 5",
+       x = "Incurred Loss", y = "Cumulative Paid Loss") 
+```
+
+We can see how the spread of the data points changes when we filter the data for claims with a development lag of 5 years or more. The linear relationship between `IncurLoss` and `CumPaidLoss` is more evident in the filtered data.
+
+## Model Selection
+
+As the relationship between Cumulative Paid Loss and Incurred Loss is linear, we can use a `linear regression model` to predict Cumulative Paid Loss based on Incurred Loss, Earned Premium, Accident Year, and Development Lag.
+
+### Linear Regression Modeling
+
+The linear regression model is a statistical method used to model the relationship between a dependent variable and one or more independent variables. The model assumes a linear relationship between the variables and can be represented as follows:
+
+<center>
+
+![ACTEX Learning: Linear Regression Model](images/2.2_lm.png)
+
+</center>
+
+$$Y = \beta_0 + \beta_1 X + \epsilon$$
+
+Where, $Y$ is the dependent variable, $X$ is the independent variable.
+
+$\beta_0$ is the intercept of the line, representing the baseline number of lives when age is zero, and can be calculated as follows:
+
+$$\beta_0 = \bar{Y} - \beta_1 \bar{X}$$
+
+$\beta_1$ is the coefficient of the model, and can be calculated as follows:
+
+$$\beta_1 = \frac{Cov(X,Y)}{Var(X)} = \frac{\sum_{i=1}^{n}(X_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^{n}(X_i - \bar{X})^2}$$
+
+The objective is to minimize the sum of squared errors (SSE) between the predicted values and the actual values.
+
+$$SSE = \sum_{i=1}^{n}(Y_i - \hat{Y_i})^2$$ Evaluating the model with the following metrics:
+
+-   **R-squared**: The proportion of the variance in the dependent variable that is predictable from the independent variable(s). $$R^2 = 1 - \frac{SSE}{SST}$$
+-   **Mean Squared Error (MSE)**: The average of the squared differences between predicted and actual values. $$MSE = \frac{1}{n} \sum_{i=1}^{n}(Y_i - \hat{Y_i})^2$$
+-   **Root Mean Squared Error (RMSE)**: The square root of the average of the squared differences between predicted and actual values. $$RMSE = \sqrt{MSE}$$
+
+## Model Training
+
+We will create a `training` and a `test` dataset to train the model and evaluate its performance.
+
+```{r}
+# Split the data into training and test sets
+set.seed(123)
+train_index <- sample(1:nrow(lag5plus), 0.8 * nrow(lag5plus))
+train_data <- lag5plus[train_index, ]
+test_data <- lag5plus[-train_index, ]
+```
+
+The `train_data` will be used to fit the model, while the `test_data` will be used to evaluate the model's performance.
+
+**Fitting a regression line model with only one predictor**
+
+We use the `lm()` function to fit a linear regression model with the CumPaidLoss as the dependent variable and IncurLoss as the predictor variable. The formula for the model is `CumPaidLoss ~ IncurLoss`.
+
+```{r}
+# Fit a linear regression model
+model1 <- lm(formula = CumPaidLoss ~ IncurLoss, 
+             data = train_data)
+
+# View the model summary
+summary(model1)
+```
+
+------------------------------------------------------------------------
+
+The output of the linear regression model provides information about the coefficients of the model, their significance, and the overall fit of the model to the data.
+
+In this case we used a simple regression model with one predictor (IncurLoss) to predict the CumPaidLoss. The coefficients of the model represent the relationship between the predictor variable and the outcome variable.
+
+The results show, the `coefficient` for IncurLoss is 8.100e-01 and indicates that for each unit increase in IncurLoss, the CumPaidLoss is expected to increase by 8.152e-01 units.
+
+::: callout-tip
+```{r}
+# Define the number
+num <- 8.100e-01
+num
+# Force the display of the number in scientific notation
+format(num, scientific = TRUE)
+# Force the display of the number without scientific notation
+format(num, scientific = FALSE)
+```
+:::
+
+The `p-value` associated with the coefficient is less than 0.05, indicating that the coefficient is statistically significant in predicting the outcome.
+
+The `R-squared` value measures how well the model explains the variance in the data, with higher values indicating a better fit. In this case it explains \~94% of the variance in the data.
+
+We have used only one predictor variable in this model, but you can include additional variables like EarnedPremNet, AccidentYear, and DevelopmentLag to build a more complex model.
+
+**Fitting a multiple regression model**:
+
+$$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_n x_n + \epsilon$$
+
+```{r}
+# Fit a multiple linear regression model
+model2 <- lm(CumPaidLoss ~ IncurLoss + EarnedPremNet + AccidentYear + DevelopmentLag, 
+             data = train_data)
+# View the model summary
+summary(model2)
+```
+
+------------------------------------------------------------------------
+
+The results of the multiple linear regression model provide information about the coefficients of the model for each predictor variable, their significance, and the overall fit of the model to the data.
+
+The coefficients for the predictor variables indicate how they influence the predicted CumPaidLoss. All coefficients are positives and statistically significant, this means that all predictor variables have a positive impact on the CumPaidLoss.
+
+## Models Evaluation
+
+### ANOVA Test
+
+```{r}
+anova(model1, model2)
+```
+
+The ANOVA test compares the two models to determine if the additional predictor variables in model 2 significantly improve the model fit compared to model 1.
+
+In this test the null hypothesis is that the two models are equal, and the alternative hypothesis is that the two models are different.
+
+A p-value less than 0.05 indicates that model 2 is a better fit for the data than model 1.
+
+### R-squared
+
+```{r}
+# Calculate the R-squared 
+summary(model1)$r.squared;
+summary(model2)$r.squared
+```
+
+The `R-squared` value measures how well the model explains the variance in the data, with higher values indicating a better fit. In this case, model 2 has a higher R-squared value than model 1, indicating that it explains more of the variance in the data.
+
+### Mean Squared Error (MSE)
+
+```{r}
+# Mean Squared Error (MSE)
+mean(model1$residuals^2)
+mean(model2$residuals^2)
+```
+
+`Mean Squared Error (MSE)` is a measure of the model's accuracy, with lower values indicating a better fit to the data. The model with the lower MSE is considered more accurate in predicting the outcome.
+
+Model 1 and model 2 released a MSE of 23117737 and 16903090, respectively, which means that model 2 is more accurate in predicting the CumPaidLoss. And in terms of units, the MSE is in squared currency units. And so, (\$)16903090 is the average squared error in predicting the CumPaidLoss. So, we can commit an error of (\$)16903090 in our predictions.
+
+### Root Mean Squared Error (RMSE)
+
+```{r}
+sqrt(mean(model1$residuals^2));
+sqrt(mean(model2$residuals^2))
+```
+
+The `Root Mean Squared Error (RSME)` is a measure of the model's accuracy, and the closer it is to zero, the better the model fits the data, with lower values indicating a better fit to the data. The RMSE is in the same units as the dependent variable (CumPaidLoss).
+
+An RMSE value of (\$)4,111.337 represents the average deviation of the predicted values from the actual values in the same units as the dependent variable.
+
+## Predicting Cumulative Paid Loss
+
+Based on the metric results from both models, we select `model2` to estimate the CumPaidLoss values on different data than the training set used to fit the model.
+
+Prediction generally refers to estimating an outcome based on known input variables. The goal is to predict outcomes for new observations within the range of the data used to train the model. In prediction, you’re often working with data that is either currently available or similar to what you’ve already observed. The prediction is based on patterns learned from historical data.
+
+To test the predictions capability of model2, we use the `predict()` function on the `test_data` as follows:
+
+```{r}
+# Predict the cumulative paid loss for the test data
+predictions_test <- predict(model2, test_data)
+```
+
+Then, we can visualize the actual vs. predicted values using a scatter plot:
+
+```{r}
+# Plot actual vs. predicted values
+ggplot(test_data, 
+       aes(x = CumPaidLoss, y = predictions_test)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, color = "red") +
+  labs(title = "Actual vs. Predicted Cumulative Paid Loss", 
+       x = "Actual", y = "Predicted")
+```
+
+We can also use the model to estimate the CumPaidLoss for `new data` points. For example, we can create a new dataset with specific values for the predictor variables and use the models to predict the CumPaidLoss.
+
+```{r}
+# Create a new dataset for predictions (optional)
+new_data <- data.frame(
+  AccidentYear = factor(1995),
+  DevelopmentLag = 5,
+  IncurLoss = 100000,
+  EarnedPremNet = 150000
+)
+
+# Predict the cumulative paid loss for new data
+predictions <- predict(model2, new_data)
+predictions
+```
+
+Visualize the predicted value on observed data:
+
+```{r}
+ggplot(lag5plus, 
+       aes(x = IncurLoss, y = CumPaidLoss)) +
+  geom_point(size = 0.5) +
+  geom_point(x = new_data$IncurLoss, y = predictions, color = "red") +
+  geom_smooth(method = "lm",
+              linewidth = 0.5,
+              se = FALSE) +
+  labs(title = "Predicting Cumulative Paid Loss", 
+x = "Incurred Loss", y = "Cumulative Paid Loss")
+```
+
+# Example 2: Predicting Lives Based on Age and Country
+
+The data for this example is from the `lifecontingencies` package, which contains various datasets related to actuarial science. You don't need to install the package, as data is made available in the `data` folder of the lesson as `.RData` file.
+
+We will use demographic data for France and Germany to build a linear regression model to predict future lives based on age and country.
+
+```{r}
+#| eval: false
+#| echo: false
+#| include: false
+# Here is shown how to install the package if is not already installed
+# and load the library and data
+if (!requireNamespace("lifecontingencies", quietly = TRUE)) {
+  install.packages("lifecontingencies")
+}
+library(lifecontingencies)
+
+data("demoFrance")
+data("demoGermany")
+save(demoFrance, demoGermany, file = "data/demo_data.RData")
+```
+
+## Data Collection
+
+```{r}
+load("data/demo_data.RData")
+```
+
+## Data Cleaning and Preparation
+
+```{r}
+raw_Germany <- demoGermany
+
+head(raw_Germany)
+```
+
+```{r}
+livesGermany <- raw_Germany %>%
+  rename(age = x) %>%
+  select(age, qx = qxMale) %>%
+  mutate(px = 1 - qx,
+         lives = c(1, head(lead(px), -1)),
+         lives = as.integer(100e3*cumprod(lives))) %>%
+  select(age, lives)
+
+head(livesGermany)
+```
+
+```{r}
+raw_France <- demoFrance
+
+head(raw_France)
+```
+
+```{r}
+livesFrance <- raw_France %>%
+  select(age, lives = TH00_02)
+
+head(livesFrance)
+```
+
+### Data Merging and Transformation
+
+```{r}
+tbl_mortality <- livesFrance %>%
+  rename(France = lives) %>%
+  full_join(livesGermany %>%
+              rename(Germany = lives), by = "age") %>%
+  pivot_longer(cols = c("France","Germany"), 
+               names_to = "Country", 
+               values_to = "Lives") %>%
+  filter(!is.na(Lives))
+
+head(tbl_mortality)
+```
+
+We can also calculate the mean and standard deviation of the age and lives by country using the `dplyr` package:
+
+```{r}
+tbl_mortality %>%
+  group_by(Country) %>%
+  summarize(mean_age = mean(age),
+            mean_lives = mean(Lives),
+            sd_age = sd(age),
+            sd_lives = sd(Lives))
+```
+
+And the mean of the numeric variables in the dataset:
+
+```{r}
+tbl_mortality %>%
+  select(where(is.numeric)) %>%
+  map_dbl(mean)
+```
+
+## Exploratory Data Analysis (EDA)
+
+```{r}
+ggplot(tbl_mortality, 
+       aes(x = age, y = Lives, color = Country)) +
+  geom_line() +
+  labs(title = "Lives by Age and Country", 
+       x = "Age", y = "Lives")
+```
+
+## Model Selection
+
+Visualize the relationship between age and lives by country:
+
+```{r}
+ggplot(tbl_mortality, 
+       aes(x = age, y = Lives)) +
+  geom_line(aes(linetype = Country)) +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  geom_smooth(method = "gam", se = FALSE, color = "green") +
+  labs(title = "Lives by Age and Country", 
+       x = "Age", y = "Lives",
+       caption = "Linear (blue) vs. GAM Model (green)")
+```
+
+### Generalized Additive Models (GAMs)
+
+The model that would best fit the data is a `Generalized Additive Model (GAM)`, it allows for non-linear relationships between the predictors and the response variable. The GAM model can capture more complex patterns in the data compared to a linear model.
+
+To fit a GAM model, we can use the `glm()` function with the `family = gaussian()` argument to specify the Gaussian distribution for the response variable. The `glm()` function allows us to fit a variety of models, including linear regression, logistic regression, and generalized linear models (GLMs).
+
+The formula for GAMs model is:
+
+$$Y = \beta_0 + \beta_1 f(X_1) + \epsilon$$
+
+Where, $Y$ is the dependent variable, $f(X_1)$ is a smooth function of the predictor variable, and $\epsilon$ is the error term.
+
+The residuals can follow different distributions depending on the type of model. In this case, we assume that the residuals follow a Gaussian distribution:  $\epsilon \sim N(0, \sigma^2)$
+
+$$\epsilon = Y - \hat{Y}$$
+
+Let's construct a GAM model to predict the number of lives based on age and country, using the `poly()` function to include a polynomial term for age:
+
+$$Y = \beta_0 + \beta_1 X^2 + \beta_2 X + \epsilon$$
+
+## Model Training
+
+```{r}
+# Split the data into training and test sets
+set.seed(123)
+train_index <- sample(1:nrow(tbl_mortality), 0.8 * nrow(tbl_mortality))
+train_data <- tbl_mortality[train_index, ]
+test_data <- tbl_mortality[-train_index, ]
+```
+
+```{r}
+gam_model <- glm(formula = Lives ~ poly(age, 2) + Country, 
+                 data = train_data)
+  
+summary(gam_model)  
+```
+
+------------------------------------------------------------------------
+
+Looking at the meaning of the model output, the coefficients represent the expected count of lives. The coefficient for Germany (5455.4) indicates that the expected count of lives in Germany is higher than in France, after controlling for age.
+
+poly(age, 2) coefficients results are negatives, which means that the expected count of lives decreases with age, but the rate of decrease slows down as age increases.
+
+## Models Evaluation
+
+### Akaike Information Criterion (AIC)
+
+The `Akaike Information Criterion (AIC)` is a measure of the model's goodness of fit, balancing the trade-off between model complexity and accuracy. Lower AIC values indicate a better fit to the data.
+
+$$AIC = 2k - 2ln(L)$$
+
+Where, $k$ is the number of parameters in the model, and $L$ is the likelihood of the model given the data.
+
+$$L = \prod_{i=1}^{n} f(y_i | x_i)$$
+In this case $f(y_i | x_i)$ is the probability density function of the Gaussian distribution.
+
+```{r}
+AIC(gam_model)
+```
+
+When comparing the AIC values of the linear model and the GAM model, the GAM model has a lower AIC value, indicating a better fit to the data.
+
+## Making Predictions
+
+Here we test the predictions of the GLM and GAM models:
+```{r}
+# Make predictions with the GLM model
+gam_predictions_test <- predict(gam_model, 
+                                test_data, 
+                                type = "response")
+```
+
+
+```{r}
+cbind(test_data, gam_predictions_test) %>%
+  ggplot(aes(x = age, y = Lives, group = Country)) +
+  geom_point(size = 0.5) +
+  geom_line(aes(y = gam_predictions_test, color = Country)) +
+  facet_wrap(~Country) +
+  labs(title = "Predicting Lives by Age and Country", 
+       x = "Age", y = "Lives")
+```
+
+
+```{r}
+# Create a new data frame for predictions
+new_data <- data.frame(age = 55, Country = "Germany")
+```
+
+
+```{r}
+# Make predictions with the GLM model
+gam_predictions <- predict(gam_model, 
+                           new_data, 
+                           type = "response")
+gam_predictions
+```
+
+```{r}
+# Plot the model
+ggplot(tbl_mortality, 
+       aes(x = age, y = Lives)) +
+  geom_line(aes(linetype = Country), size = 0.5) +
+  geom_smooth(method = "gam",
+              linewidth = 0.5,
+              se = FALSE) +
+  geom_point(x = 55, y = gam_predictions, color = "red") +
+labs(title = "Predicting Lives by Age and Country", 
+     x = "Age", y = "Lives Remaining")
+```
+
+::: callout-tip
+To further understand how the model works, you can explore the `predict()` function with the `?predict()` command in R.
+
+```{r}
+#| eval: false
+?predict()
+```
+:::
+
+# Conclusion
+
+In this lesson, we have explored practical examples of predictive modeling in actuarial contexts. We started by building a linear regression model to predict Cumulative Paid Loss based on Incurred Loss, Earned Premium, Accident Year, and Development Lag using real-world insurance data. We then moved on to predicting future lives based on age and country using demographic data for France and Germany with a Generalized Linear Model (GLM) and a Generalized Additive Model (GAM).
+
+Predictive modeling is a powerful tool in actuarial science, allowing actuaries to forecast future outcomes based on historical data. By applying these techniques, actuaries can gain valuable insights into risk assessment, claim estimation, and premium setting, contributing to the stability and profitability of insurance companies.
+
+Keep practicing and exploring different datasets to enhance your skills in predictive modeling and data analysis in the actuarial field. Happy modeling!
+
+# References
+
+-   [R for Actuaries and Data Scientists](https://info.actexmadriver.com/r-for-actuaries)
+-   [R for Data Science](https://r4ds.hadley.nz/)
+-   [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/)
+-   [Tidyverse Documentation](https://www.tidyverse.org/)
+-   [CRAN Task View: Actuarial Science](https://cran.r-project.org/web/views/ActuarialScience.html)
