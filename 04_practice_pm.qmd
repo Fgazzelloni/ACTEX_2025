@@ -1,11 +1,12 @@
 ---
 title: "Introduction to R and Basic Data Analysis"
-subtitle: "AFDP - ACTEX Learning - Lesson 2.2"
+subtitle: "ACTEX Learning - AFDP: R Session 2.2"
 author: "Federica Gazzelloni and Farid Flici"
 date: "2024/10/10"
 format: 
   html:
     toc: true
+    code-overflow: wrap
 editor: visual
 execute:
   warning: false
@@ -24,7 +25,7 @@ ggplot2::theme_set(book_theme)
 
 Predictive modeling is a specific, technical step within the broader process of predictive analytics. It involves creating a mathematical or machine learning model that can forecast future outcomes based on historical data. A predictive model is a representation of the relationships between variables (features) and the outcome you’re trying to predict (target). Various algorithms can be used to build these models, such as linear regression, decision trees, or neural networks.
 
-In actuarial science, predictive modeling is used to estimate future claims, analyze risk, and set insurance premiums. In this lesson, we will explore some practical examples of predictive modeling in actuarial contexts using R.
+In actuarial science, predictive modeling is used to estimate future claims, analyze risk, and set insurance premiums. In this session, we will explore some practical examples of predictive modeling in actuarial contexts using R.
 
 # Predictive Data Modeling Workflow
 
@@ -177,11 +178,26 @@ $\beta_1$ is the coefficient of the model, and can be calculated as follows:
 
 $$\beta_1 = \frac{Cov(X,Y)}{Var(X)} = \frac{\sum_{i=1}^{n}(X_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^{n}(X_i - \bar{X})^2}$$
 
+::: callout-tip
+In R we can calculate the coefficients of the model using the specific model function, such as `lm()`, or `glm()`. The slope ($\beta_i$) and intercept ($\beta_0$) can be retrieved from the model summary.
+
+To calculate them directly, we can use the following code:
+
+```{r}
+#| eval: false
+slope <- cov(x, y) / var(x)
+intercept <- mean(y) - slope * mean(x)
+y_hat <- intercept + slope * x
+y_hat_dist <- abs(y - y_hat)
+```
+:::
+
 The objective is to minimize the sum of squared errors (SSE) between the predicted values and the actual values.
 
 $$SSE = \sum_{i=1}^{n}(Y_i - \hat{Y_i})^2$$ Evaluating the model with the following metrics:
 
 -   **R-squared**: The proportion of the variance in the dependent variable that is predictable from the independent variable(s). $$R^2 = 1 - \frac{SSE}{SST}$$
+-   **Mean Absolute Error (MAE)**: The average of the absolute differences between predicted and actual values. $$MAE = \frac{1}{n} \sum_{i=1}^{n}|Y_i - \hat{Y_i}|$$
 -   **Mean Squared Error (MSE)**: The average of the squared differences between predicted and actual values. $$MSE = \frac{1}{n} \sum_{i=1}^{n}(Y_i - \hat{Y_i})^2$$
 -   **Root Mean Squared Error (RMSE)**: The square root of the average of the squared differences between predicted and actual values. $$RMSE = \sqrt{MSE}$$
 
@@ -192,7 +208,9 @@ We will create a `training` and a `test` dataset to train the model and evaluate
 ```{r}
 # Split the data into training and test sets
 set.seed(123)
-train_index <- sample(1:nrow(lag5plus), 0.8 * nrow(lag5plus))
+train_index <- sample(1:nrow(lag5plus), 
+                      0.8 * nrow(lag5plus),
+                      replace = FALSE)
 train_data <- lag5plus[train_index, ]
 test_data <- lag5plus[-train_index, ]
 ```
@@ -419,7 +437,7 @@ livesFrance <- raw_France %>%
 head(livesFrance)
 ```
 
-### Data Merging and Transformation
+## Data Merging and Transformation
 
 ```{r}
 tbl_mortality <- livesFrance %>%
@@ -490,7 +508,7 @@ $$Y = \beta_0 + \beta_1 f(X_1) + \epsilon$$
 
 Where, $Y$ is the dependent variable, $f(X_1)$ is a smooth function of the predictor variable, and $\epsilon$ is the error term.
 
-The residuals can follow different distributions depending on the type of model. In this case, we assume that the residuals follow a Gaussian distribution:  $\epsilon \sim N(0, \sigma^2)$
+The residuals can follow different distributions depending on the type of model. In this case, we assume that the residuals follow a Gaussian distribution: $\epsilon \sim N(0, \sigma^2)$
 
 $$\epsilon = Y - \hat{Y}$$
 
@@ -503,7 +521,9 @@ $$Y = \beta_0 + \beta_1 X^2 + \beta_2 X + \epsilon$$
 ```{r}
 # Split the data into training and test sets
 set.seed(123)
-train_index <- sample(1:nrow(tbl_mortality), 0.8 * nrow(tbl_mortality))
+train_index <- sample(1:nrow(tbl_mortality), 
+                      0.8 * nrow(tbl_mortality),
+                      replace = FALSE)
 train_data <- tbl_mortality[train_index, ]
 test_data <- tbl_mortality[-train_index, ]
 ```
@@ -531,8 +551,7 @@ $$AIC = 2k - 2ln(L)$$
 
 Where, $k$ is the number of parameters in the model, and $L$ is the likelihood of the model given the data.
 
-$$L = \prod_{i=1}^{n} f(y_i | x_i)$$
-In this case $f(y_i | x_i)$ is the probability density function of the Gaussian distribution.
+$$L = \prod_{i=1}^{n} f(y_i | x_i)$$ In this case $f(y_i | x_i)$ is the probability density function of the Gaussian distribution.
 
 ```{r}
 AIC(gam_model)
@@ -543,13 +562,13 @@ When comparing the AIC values of the linear model and the GAM model, the GAM mod
 ## Making Predictions
 
 Here we test the predictions of the GLM and GAM models:
+
 ```{r}
 # Make predictions with the GLM model
 gam_predictions_test <- predict(gam_model, 
                                 test_data, 
                                 type = "response")
 ```
-
 
 ```{r}
 cbind(test_data, gam_predictions_test) %>%
@@ -561,12 +580,10 @@ cbind(test_data, gam_predictions_test) %>%
        x = "Age", y = "Lives")
 ```
 
-
 ```{r}
 # Create a new data frame for predictions
 new_data <- data.frame(age = 55, Country = "Germany")
 ```
-
 
 ```{r}
 # Make predictions with the GLM model
@@ -600,16 +617,15 @@ To further understand how the model works, you can explore the `predict()` funct
 
 # Conclusion
 
-In this lesson, we have explored practical examples of predictive modeling in actuarial contexts. We started by building a linear regression model to predict Cumulative Paid Loss based on Incurred Loss, Earned Premium, Accident Year, and Development Lag using real-world insurance data. We then moved on to predicting future lives based on age and country using demographic data for France and Germany with a Generalized Linear Model (GLM) and a Generalized Additive Model (GAM).
+In this session, we have explored practical examples of predictive modeling in actuarial contexts. We started by building a linear regression model to predict Cumulative Paid Loss based on Incurred Loss, Earned Premium, Accident Year, and Development Lag using real-world insurance data. We then moved on to predicting future lives based on age and country using demographic data for France and Germany with a Generalized Linear Model (GLM) and a Generalized Additive Model (GAM).
 
 Predictive modeling is a powerful tool in actuarial science, allowing actuaries to forecast future outcomes based on historical data. By applying these techniques, actuaries can gain valuable insights into risk assessment, claim estimation, and premium setting, contributing to the stability and profitability of insurance companies.
 
 Keep practicing and exploring different datasets to enhance your skills in predictive modeling and data analysis in the actuarial field. Happy modeling!
 
-# References
+# Resources
 
 -   [R for Actuaries and Data Scientists](https://info.actexmadriver.com/r-for-actuaries)
--   [R for Data Science](https://r4ds.hadley.nz/)
--   [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/)
--   [Tidyverse Documentation](https://www.tidyverse.org/)
--   [CRAN Task View: Actuarial Science](https://cran.r-project.org/web/views/ActuarialScience.html)
+-   [Casualty Actuarial Society (CAS)](https://www.casact.org/)
+-   [Statistical Foundations of Actuarial Learning and its Applications](https://link.springer.com/book/10.1007/978-3-031-12409-9)
+-   [R for Actuaries and Data Scientist with Applications to Insurance](https://www.amazon.com/Actuaries-Data-Scientist-Applications-Insurance/dp/164756316X)

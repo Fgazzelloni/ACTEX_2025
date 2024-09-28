@@ -1,0 +1,77 @@
+---
+title: "Introduction to R and Basic Data Analysis"
+description: "Actuarial Faculty Development Program 2024 - ACTEX Learning"
+format: 
+  html:
+    toc: true
+---
+
+**This course is designed to introduce actuarial students to the R programming language**
+
+## Instructors
+
+::::: columns
+::: column
+-   Name: **Federica Gazzelloni, IIA**
+-   Email: [fede.gazzelloni\@gmail.com](mailto:fede.gazzelloni@gmail.com){.email}
+-   Website: [federicagazzelloni.com](https://federicagazzelloni.com)
+-   LinkedIn: [federicagazzelloni](https://www.linkedin.com/in/federicagazzelloni/)
+:::
+
+::: column
+-   Name: **Farid Flici, PHD**
+-   Email: [farid.flici\@gmail.com](mailto:farid.flici@gmail.com){.email}
+-   Website: [farid-flici.github.io](https://farid-flici.github.io/)
+-   LinkedIn: [faridflici](https://www.linkedin.com/in/farid-flici-659a7625/)
+:::
+
+## Course Description
+
+This course is designed to equip you with the technical skills to use R in actuarial science. You’ll gain the necessary knowledge to succeed in the rapidly evolving world of risk analysis, insurance, and finance. Throughout the program, you’ll discover the power of R, one of the most widely-used programming languages in statistics and actuarial science, for performing essential tasks like pricing, reserving, and risk management.
+
+Whether you’re just starting out or looking to enhance your current skill set, this course offers a comprehensive approach to understanding actuarial concepts, from data manipulation and visualization to advanced statistical modeling. Our lessons will take you step-by-step through real-world applications, providing hands-on experience with the types of challenges actuaries face every day.
+
+## Learning Objectives
+
+By the end of this course, you’ll be able to:
+
+-   Build and analyze actuarial models using R.
+-   Apply statistical methods to pricing, reserving, and risk management.
+-   Interpret and visualize data to inform key business decisions.
+-   Use predictive analytics to forecast trends and outcomes.
+
+## Prerequisites
+
+This program is designed for both aspiring and experienced actuaries who want to deepen their expertise in data analysis and programming.
+
+-   Basic knowledge of actuarial and statistics concepts
+-   Basic knowledge of programming
+
+## Course Outline
+
+The course is divided in two sessions of 2 hours each. The first session will cover the basics of R programming, while the second session will focus on predictive modeling.
+
+### Day 1: Introduction to R
+
+-   Introduction to R
+-   Data types and structures
+-   Example 1: Data simulation and visualization
+-   Example 2: Data manipulation and visualization
+
+### Day 2: Predictive Modeling
+
+-   Introduction to Predictive Modeling
+-   Example 1: Linear Regression
+-   Example 2: Generalized Additive Models
+-   Final Project Outline
+
+## Course Materials
+
+-   Slides and compressed files: <https://www.actuarialuniversity.com/seminar/View/14826>
+-   Github repository: <https://github.com/Fgazzelloni/ACTEX_october2024>
+-   Resources at the end of each lesson.
+
+## Course Evaluation
+
+Final Project (100%) - The final project will be a data analysis project that will require students to apply the concepts learned in the course.
+:::::

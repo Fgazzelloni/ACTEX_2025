@@ -1,6 +1,6 @@
 ---
 title: "Introduction to R and Basic Data Analysis"
-subtitle: "ACTEX Learning - Lesson 1.1"
+subtitle: "ACTEX Learning - AFDP: R Session 1.1"
 author: "Federica Gazzelloni and Farid Flici"
 date: "2024/10/03"
 format: 
@@ -28,7 +28,10 @@ If you haven't already, please install R and RStudio on your computer:
 </center>
 
 \
-2. Open RStudio and install the necessary packages with the following command:
+
+2.  Download the material for this session from the **Actuarial University Dashboard** using the course link below: <https://www.actuarialuniversity.com/seminar/View/14826>. You'll find a `Session1.zip` file with all the necessary files. Make sure to unzip the file in a location you can easily access.
+
+3.  Open RStudio and install the necessary packages with the following command:
 
 ```{r}
 #| eval: false
@@ -51,19 +54,19 @@ R is particularly popular among statisticians, data analysts, and data scientist
 
 With a good understanding of these concepts, you can start exploring advanced features of R based on your specific needs.
 
-------------------------------------------------------------------------
+## Resources
 
-## Useful Resources
-
-These are useful resources in case you get stuck or you just want to learn more about R:
+In case you get stuck or you just want to learn more about R, here are some resources to help you along the way:
 
 -   `help.start()`
 -   `?syntax`
 
 (hint. substitute syntax with your function)
 
-You can open a help page for any object that comes with R or with an R package. To open the help page, type a ? before the object's name and then run the command.
+You can open a help page for any object that comes with R or with an R package. To open the help page, type a `?` before the object's name and then run the command.
 
--   BOOK: **R for Data Science** by Hadley Wickham and Garrett Grolemund. Available online at <https://r4ds.had.co.nz/>
--   CRAN Task View: Actuarial Science: <https://cran.r-project.org/web/views/ActuarialScience.html>
--   R/Insurance Series: For Everyone in Insurance or Actuarial Science: <https://www.r-consortium.org/r-insurance-series-for-everyone-in-insurance-or-actuarial-science>
+**More Resources:**
+
+-   **BOOK**: *R for Data Science* by Hadley Wickham and Garrett Grolemund. Available online at <https://r4ds.had.co.nz/>
+-   **CRAN Task View**: *Actuarial Science*: <https://cran.r-project.org/web/views/ActuarialScience.html>
+-   **R/Insurance Series**: *For Everyone in Insurance or Actuarial Science*: <https://www.r-consortium.org/r-insurance-series-for-everyone-in-insurance-or-actuarial-science>

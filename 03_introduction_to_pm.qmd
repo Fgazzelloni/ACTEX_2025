@@ -1,6 +1,6 @@
 ---
 title: "Introduction to R and Basic Data Analysis"
-subtitle: "AFDP - ACTEX Learning - Lesson 2.1"
+subtitle: "ACTEX Learning - AFDP: R Session 2.1"
 author: "Federica Gazzelloni and Farid Flici"
 date: "2024/10/10"
 format: 
@@ -12,9 +12,13 @@ execute:
   message: false
 ---
 
+## Set-up
+
+If you haven't already, please download the material for this session from the **Actuarial University Dashboard** using the course link below: <https://www.actuarialuniversity.com/seminar/View/14826>. You'll find a `Session2.zip` file with all the necessary files. Make sure to unzip it in the same location of `Session1.zip`.
+
 ## Introduction to Predictive Modeling
 
-In the first lesson of this course, we learned about the basics of R and how to perform basic data analysis. In this lesson, we will delve deeper into predictive modeling and practice using R functions in various actuarial contexts. We will also learn how to manage CSV files, explore R packages for data analysis, and apply our knowledge to a practical project.
+In the first session of this course, we learned about the basics of R and how to perform basic data analysis. In this session, we will delve deeper into predictive modeling and practice using R functions in various actuarial contexts. We will also learn how to manage CSV files, explore R packages for data analysis, and apply our knowledge to a practical project.
 
 ## Learning Objectives
 
@@ -30,3 +34,9 @@ R is particularly suited for predictive modeling in actuarial work because it su
 
 -   Building a linear regression model to predict a company’s sales based on advertising spend.
 -   Using a decision tree to classify whether a customer will churn based on demographic and behavioral data.
+
+## Resources
+
+-   [Applied Predictive Modeling](https://link.springer.com/book/10.1007/978-1-4614-6849-3) by Max Kuhn and Kjell Johnson
+-   [An Introduction to Statistical Learning](https://www.statlearning.com/) by Gareth James, Daniela Witten, Trevor Hastie, and Robert Tibshirani
+-   [Generalized Additive Models: An Introduction with R](https://www.amazon.com/Generalized-Additive-Models-Introduction-Statistical/dp/1498728332) by Simon N. Wood

@@ -2,8 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
-bunker
-Lesson1/data/CASdatasets
-Lesson2/data/CASdatasets
+material/bunker
 *.html
 *_files
+/.quarto/
+_site
+rsconnect
