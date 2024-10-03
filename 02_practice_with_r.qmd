@@ -30,6 +30,50 @@ R packages are collections of functions, data, and compiled code in a well-defin
 
 Others packages are available for download from [CRAN (Comprehensive R Archive Network)](https://cran.r-project.org/web/packages/available_packages_by_name.html) or other repositories, such as [GitHub](https://github.com/) usually for package development versions. To install a package which is stored on CRAN, we can use the `install.packages("")` function. To load a package, use the `library()` function.
 
+# Data Types
+
+R has several data types, including numeric, character, logical, integer, and complex. The most common data types are:
+
+-   `Numeric` - real numbers
+-   `Character` - text
+-   `Logical` - TRUE or FALSE
+-   `Integer` - whole numbers
+
+It allows data to be on the form of:
+
+-   `Vectors` of numbers, characters, or logical values
+-   `Matrices` which are arrays with two dimensions
+-   `Arrays` which are multi-dimensional generalizations of matrices
+-   `Data Frames` which are matrices with columns of different types
+-   `Lists` which are collections of objects
+
+# Basic R Syntax
+
+R is a case-sensitive language, meaning that it distinguishes between uppercase and lowercase letters. It uses the `#` symbol to add comments to the code. Comments are ignored by the R interpreter and are used to explain the code.
+
+```{r}
+# Basic arithmetic and variable assignment
+x <- 10
+y <- 5
+sum_xy <- x + y
+sum_xy
+```
+
+```{r}
+# Simple interest formula
+P <- 1000  # Principal
+r <- 0.05  # Interest rate
+t <- 2     # Time in years
+A <- P * (1 + r * t)
+A
+```
+
+# R Functions
+
+R is a functional programming language, which means that it is based on functions. Functions are blocks of code that perform a specific task. They take input, process it, and return output.
+
+There are two types of functions in R: `base functions` and `user-defined functions`. Base functions are built into R, while user-defined functions are created by the user.
+
 ## Base Functions
 
 For example, the `mean()` function calculates the average of a set of numbers. The `mean()` function takes a vector of numbers as input and returns the average of those numbers. To access a general function information in R, use the `help()` function, or the `?` operator.
@@ -82,50 +126,6 @@ avg <- function(x) {
 avg(x);
 mean(x)
 ```
-
-# Data Types
-
-R has several data types, including numeric, character, logical, integer, and complex. The most common data types are:
-
--   `Numeric` - real numbers
--   `Character` - text
--   `Logical` - TRUE or FALSE
--   `Integer` - whole numbers
-
-It allows data to be on the form of:
-
--   `Vectors` of numbers, characters, or logical values
--   `Matrices` which are arrays with two dimensions
--   `Arrays` which are multi-dimensional generalizations of matrices
--   `Data Frames` which are matrices with columns of different types
--   `Lists` which are collections of objects
-
-# Basic R Syntax
-
-R is a case-sensitive language, meaning that it distinguishes between uppercase and lowercase letters. It uses the `#` symbol to add comments to the code. Comments are ignored by the R interpreter and are used to explain the code.
-
-```{r}
-# Basic arithmetic and variable assignment
-x <- 10
-y <- 5
-sum_xy <- x + y
-sum_xy
-```
-
-```{r}
-# Simple interest formula
-P <- 1000  # Principal
-r <- 0.05  # Interest rate
-t <- 2     # Time in years
-A <- P * (1 + r * t)
-A
-```
-
-# R Functions
-
-R is a functional programming language, which means that it is based on functions. Functions are blocks of code that perform a specific task. They take input, process it, and return output.
-
-There are two types of functions in R: `base functions` and `user-defined functions`. Base functions are built into R, while user-defined functions are created by the user.
 
 # Essential Data Preparation Techniques: Wrangling, Manipulation, and Transformation
 
