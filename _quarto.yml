@@ -28,6 +28,8 @@ website:
         text: Introduction to Predictive Modeling
       - href: 04_practice_pm.qmd
         text: Practice Predictive Modeling
+      - href: 05_final_project.qmd
+        text: Final Project
 format:
   html:
     theme: cosmo

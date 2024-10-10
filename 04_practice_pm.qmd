@@ -236,7 +236,7 @@ The output of the linear regression model provides information about the coeffic
 
 In this case we used a simple regression model with one predictor (IncurLoss) to predict the CumPaidLoss. The coefficients of the model represent the relationship between the predictor variable and the outcome variable.
 
-The results show, the `coefficient` for IncurLoss is 8.100e-01 and indicates that for each unit increase in IncurLoss, the CumPaidLoss is expected to increase by 8.152e-01 units.
+The results show, the `coefficient` for IncurLoss is 8.100e-01 and indicates that for each unit increase in IncurLoss, the CumPaidLoss is expected to increase by 8.100e-01 units.
 
 ::: callout-tip
 ```{r}
