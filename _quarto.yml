@@ -17,6 +17,7 @@ website:
     style: "docked"
     search: true
     collapse-level: 1
+    toc: true
     contents:
       - text: "1. Welcome"
         href: index.qmd
@@ -24,12 +25,12 @@ website:
         href: 01_introduction_to_r.qmd  
       - text: "3. Basic Examples"
         href: 02_practice_with_r.qmd
-      - text: "4. Predictive Modeling"
-        menu:
-        - text: "4.1 Introduction"
-          href: 03_introduction_to_pm.qmd
-        - text: "4.2 Practice Predictive Modeling"
-          href: 04_practice_pm.qmd
+      - section: "4. Predictive Modeling"
+        contents:
+          - text: "4.1 Introduction"
+            href: 03_introduction_to_pm.qmd
+          - text: "4.2 Practice Predictive Modeling"
+            href: 04_practice_pm.qmd
       - text: "Final Project"
         href: 05_final_project.qmd
         
