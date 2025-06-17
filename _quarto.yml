@@ -18,18 +18,21 @@ website:
     search: true
     collapse-level: 1
     contents:
-      - href: index.qmd
-        text: Welcome 
-      - href: 01_introduction_to_r.qmd  
-        text: Introduction to R
-      - href: 02_practice_with_r.qmd
-        text: Practice with R
-      - href: 03_introduction_to_pm.qmd
-        text: Introduction to Predictive Modeling
-      - href: 04_practice_pm.qmd
-        text: Practice Predictive Modeling
-      - href: 05_final_project.qmd
-        text: Final Project
+      - text: "1. Welcome"
+        href: index.qmd
+      - text: "2. Introduction to R"
+        href: 01_introduction_to_r.qmd  
+      - text: "3. Basic Examples"
+        href: 02_practice_with_r.qmd
+      - text: "4. Predictive Modeling"
+        menu:
+        - text: "4.1 Introduction"
+          href: 03_introduction_to_pm.qmd
+        - text: "4.2 Practice Predictive Modeling"
+          href: 04_practice_pm.qmd
+      - text: "Final Project"
+        href: 05_final_project.qmd
+        
 format:
   html:
     theme: cosmo

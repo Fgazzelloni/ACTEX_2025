@@ -492,6 +492,11 @@ claims_data_ag %>%
        y = "Average Premium")
 ```
 
+# Example 3: Life Expectancy and Health Data
+
+
+
+
 # Summary
 
 In this lesson, we have introduced the basics of R programming, including functions, data types, and syntax. We have explored data manipulation techniques using base R functions and the `tidyverse` set of packages. We have also worked with simulated and real-world claims data to perform data wrangling, manipulation, and visualization.
