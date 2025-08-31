@@ -7,5 +7,7 @@ material/bunker
 *_files
 /.quarto/
 _site
+_freeze
 rsconnect
 scripts
+.DS_Store

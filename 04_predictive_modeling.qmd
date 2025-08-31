@@ -1,17 +1,25 @@
 ---
-title: "Introduction to R and Basic Data Analysis"
-subtitle: "ACTEX Learning - AFDP: R Session 2.2"
-author: "Federica Gazzelloni and Farid Flici"
-date: "2024/10/10"
+title: "Predictive Modeling"
+subtitle: "ACTEX Learning - AFDP: R Session"
 format: 
   html:
     toc: true
-    code-overflow: wrap
 editor: visual
 execute:
   warning: false
   message: false
 ---
+
+## Introduction to Predictive Modeling
+
+We learned about the basics of R and how to perform basic data analysis. Now, we will explore predictive modeling, which is a branch of statistics and machine learning that focuses on using historical data to make predictions about future events or outcomes. It involves building mathematical models that can analyze patterns in data and use those patterns to forecast future values or classify new observations.
+
+R is particularly suited for predictive modeling in actuarial work because it supports complex statistical analysis, has a vast collection of libraries (`glm`, `rpart`, `randomForest`, `survival`), and offers extensive visualization tools to communicate results effectively. Traditional statistical methods (like GLMs) and modern machine learning techniques (like Gradient Boosted Trees - GBMs and decision trees), can be implemented all within the same environment.
+
+### Examples
+
+-   Building a linear regression model to predict a company’s sales based on advertising spend.
+-   Using a decision tree to classify whether a customer will churn based on demographic and behavioral data.
 
 ```{r}
 #| echo: false
@@ -21,13 +29,13 @@ book_theme <- theme_minimal() +
 ggplot2::theme_set(book_theme)
 ```
 
-# Getting into Practice with Predictive Modeling
+## Getting into Practice with Predictive Modeling
 
 Predictive modeling is a specific, technical step within the broader process of predictive analytics. It involves creating a mathematical or machine learning model that can forecast future outcomes based on historical data. A predictive model is a representation of the relationships between variables (features) and the outcome you’re trying to predict (target). Various algorithms can be used to build these models, such as linear regression, decision trees, or neural networks.
 
 In actuarial science, predictive modeling is used to estimate future claims, analyze risk, and set insurance premiums. In this session, we will explore some practical examples of predictive modeling in actuarial contexts using R.
 
-# Predictive Data Modeling Workflow
+## Predictive Data Modeling Workflow
 
 <center>
 
@@ -42,11 +50,11 @@ In actuarial science, predictive modeling is used to estimate future claims, ana
 -   **Model Training**: Split the data into training and testing sets. Train the model on the training data to learn the patterns in the data.
 -   **Model Evaluation**: Evaluate the model's performance using metrics like accuracy, precision, recall, or the area under the ROC curve. Adjust the model parameters if needed.
 
-# Example 1: Predictive Modeling with Insurance Data
+## Example 1: Medical malpractice – claims made
 
 In this example, we will work with real-world insurance data to perform predictive modeling. The data is related to **medical malpractice – claims made** and contains information on **incurred losses**, **cumulative paid losses**, **earned premiums**, and **development lags**.
 
-## Data Collection
+### Data Collection
 
 The data is available in a `.CSV` file from the **Casualty Actuarial Society (CAS)** website. We will load the data into R for analysis. The data set contains run-off triangles. Upper and lower triangles data correspond to claims of accident year 1988 – 1997 with 10 years development lag.
 
@@ -60,6 +68,7 @@ library(tidyverse)
 ```
 
 ```{r}
+#| eval: false
 url <- "https://www.casact.org/sites/default/files/2021-04/medmal_pos.csv"
 df <- read_csv(file = url)
 ```
@@ -70,11 +79,14 @@ Downloaded data is now available in the `Global Environment`. It can be saved as
 ```{r}
 #| eval: false
 write.csv(df, "data/medmal_pos.csv")
-medmal_pos <- read.csv("data/medmal_pos.csv")
+```
+
+```{r}
+df <- read.csv("data/medmal_pos.csv")
 ```
 :::
 
-## Data Cleaning and Preparation
+### Data Cleaning and Preparation
 
 ```{r}
 dim(df);
@@ -126,7 +138,7 @@ top_5GR <- lag5plus %>%
 top_5GR
 ```
 
-## Exploratory Data Analysis (EDA)
+### Exploratory Data Analysis (EDA)
 
 We create a `scatterplot` for representing the relationship between `IncurLoss` and `CumPaidLoss` for both, the entire dataset and for claims with a development lag of 5 years or more:
 
@@ -152,11 +164,11 @@ ggplot(lag5plus, aes(x = IncurLoss, y = CumPaidLoss)) +
 
 We can see how the spread of the data points changes when we filter the data for claims with a development lag of 5 years or more. The linear relationship between `IncurLoss` and `CumPaidLoss` is more evident in the filtered data.
 
-## Model Selection
+### Model Selection
 
 As the relationship between Cumulative Paid Loss and Incurred Loss is linear, we can use a `linear regression model` to predict Cumulative Paid Loss based on Incurred Loss, Earned Premium, Accident Year, and Development Lag.
 
-### Linear Regression Modeling
+#### Linear Regression Modeling
 
 The linear regression model is a statistical method used to model the relationship between a dependent variable and one or more independent variables. The model assumes a linear relationship between the variables and can be represented as follows:
 
@@ -201,7 +213,7 @@ $$SSE = \sum_{i=1}^{n}(Y_i - \hat{Y_i})^2$$ Evaluating the model with the follow
 -   **Mean Squared Error (MSE)**: The average of the squared differences between predicted and actual values. $$MSE = \frac{1}{n} \sum_{i=1}^{n}(Y_i - \hat{Y_i})^2$$
 -   **Root Mean Squared Error (RMSE)**: The square root of the average of the squared differences between predicted and actual values. $$RMSE = \sqrt{MSE}$$
 
-## Model Training
+### Model Training
 
 We will create a `training` and a `test` dataset to train the model and evaluate its performance.
 
@@ -229,8 +241,6 @@ model1 <- lm(formula = CumPaidLoss ~ IncurLoss,
 # View the model summary
 summary(model1)
 ```
-
-------------------------------------------------------------------------
 
 The output of the linear regression model provides information about the coefficients of the model, their significance, and the overall fit of the model to the data.
 
@@ -268,15 +278,13 @@ model2 <- lm(CumPaidLoss ~ IncurLoss + EarnedPremNet + AccidentYear + Developmen
 summary(model2)
 ```
 
-------------------------------------------------------------------------
-
 The results of the multiple linear regression model provide information about the coefficients of the model for each predictor variable, their significance, and the overall fit of the model to the data.
 
 The coefficients for the predictor variables indicate how they influence the predicted CumPaidLoss. All coefficients are positives and statistically significant, this means that all predictor variables have a positive impact on the CumPaidLoss.
 
-## Models Evaluation
+### Models Evaluation
 
-### ANOVA Test
+#### ANOVA Test
 
 ```{r}
 anova(model1, model2)
@@ -288,7 +296,7 @@ In this test the null hypothesis is that the two models are equal, and the alter
 
 A p-value less than 0.05 indicates that model 2 is a better fit for the data than model 1.
 
-### R-squared
+#### R-squared
 
 ```{r}
 # Calculate the R-squared 
@@ -298,7 +306,7 @@ summary(model2)$r.squared
 
 The `R-squared` value measures how well the model explains the variance in the data, with higher values indicating a better fit. In this case, model 2 has a higher R-squared value than model 1, indicating that it explains more of the variance in the data.
 
-### Mean Squared Error (MSE)
+#### Mean Squared Error (MSE)
 
 ```{r}
 # Mean Squared Error (MSE)
@@ -310,7 +318,7 @@ mean(model2$residuals^2)
 
 Model 1 and model 2 released a MSE of 23117737 and 16903090, respectively, which means that model 2 is more accurate in predicting the CumPaidLoss. And in terms of units, the MSE is in squared currency units. And so, (\$)16903090 is the average squared error in predicting the CumPaidLoss. So, we can commit an error of (\$)16903090 in our predictions.
 
-### Root Mean Squared Error (RMSE)
+#### Root Mean Squared Error (RMSE)
 
 ```{r}
 sqrt(mean(model1$residuals^2));
@@ -321,7 +329,7 @@ The `Root Mean Squared Error (RSME)` is a measure of the model's accuracy, and t
 
 An RMSE value of (\$)4,111.337 represents the average deviation of the predicted values from the actual values in the same units as the dependent variable.
 
-## Predicting Cumulative Paid Loss
+### Predicting Cumulative Paid Loss
 
 Based on the metric results from both models, we select `model2` to estimate the CumPaidLoss values on different data than the training set used to fit the model.
 
@@ -376,7 +384,7 @@ ggplot(lag5plus,
 x = "Incurred Loss", y = "Cumulative Paid Loss")
 ```
 
-# Example 2: Predicting Lives Based on Age and Country
+## Bonus Example 2: Predicting Lives Based on Age and Country
 
 The data for this example is from the `lifecontingencies` package, which contains various datasets related to actuarial science. You don't need to install the package, as data is made available in the `data` folder of the lesson as `.RData` file.
 
@@ -398,13 +406,13 @@ data("demoGermany")
 save(demoFrance, demoGermany, file = "data/demo_data.RData")
 ```
 
-## Data Collection
+### Data Collection
 
 ```{r}
 load("data/demo_data.RData")
 ```
 
-## Data Cleaning and Preparation
+### Data Cleaning and Preparation
 
 ```{r}
 raw_Germany <- demoGermany
@@ -437,7 +445,7 @@ livesFrance <- raw_France %>%
 head(livesFrance)
 ```
 
-## Data Merging and Transformation
+### Data Merging and Transformation
 
 ```{r}
 tbl_mortality <- livesFrance %>%
@@ -471,7 +479,7 @@ tbl_mortality %>%
   map_dbl(mean)
 ```
 
-## Exploratory Data Analysis (EDA)
+### Exploratory Data Analysis (EDA)
 
 ```{r}
 ggplot(tbl_mortality, 
@@ -481,7 +489,7 @@ ggplot(tbl_mortality,
        x = "Age", y = "Lives")
 ```
 
-## Model Selection
+### Model Selection
 
 Visualize the relationship between age and lives by country:
 
@@ -496,7 +504,7 @@ ggplot(tbl_mortality,
        caption = "Linear (blue) vs. GAM Model (green)")
 ```
 
-### Generalized Additive Models (GAMs)
+#### Generalized Additive Models (GAMs)
 
 The model that would best fit the data is a `Generalized Additive Model (GAM)`, it allows for non-linear relationships between the predictors and the response variable. The GAM model can capture more complex patterns in the data compared to a linear model.
 
@@ -516,7 +524,7 @@ Let's construct a GAM model to predict the number of lives based on age and coun
 
 $$Y = \beta_0 + \beta_1 X^2 + \beta_2 X + \epsilon$$
 
-## Model Training
+### Model Training
 
 ```{r}
 # Split the data into training and test sets
@@ -535,15 +543,13 @@ gam_model <- glm(formula = Lives ~ poly(age, 2) + Country,
 summary(gam_model)  
 ```
 
-------------------------------------------------------------------------
-
 Looking at the meaning of the model output, the coefficients represent the expected count of lives. The coefficient for Germany (5455.4) indicates that the expected count of lives in Germany is higher than in France, after controlling for age.
 
 poly(age, 2) coefficients results are negatives, which means that the expected count of lives decreases with age, but the rate of decrease slows down as age increases.
 
-## Models Evaluation
+### Models Evaluation
 
-### Akaike Information Criterion (AIC)
+#### Akaike Information Criterion (AIC)
 
 The `Akaike Information Criterion (AIC)` is a measure of the model's goodness of fit, balancing the trade-off between model complexity and accuracy. Lower AIC values indicate a better fit to the data.
 
@@ -559,7 +565,7 @@ AIC(gam_model)
 
 When comparing the AIC values of the linear model and the GAM model, the GAM model has a lower AIC value, indicating a better fit to the data.
 
-## Making Predictions
+### Making Predictions
 
 Here we test the predictions of the GLM and GAM models:
 
@@ -615,17 +621,13 @@ To further understand how the model works, you can explore the `predict()` funct
 ```
 :::
 
-# Conclusion
 
-In this session, we have explored practical examples of predictive modeling in actuarial contexts. We started by building a linear regression model to predict Cumulative Paid Loss based on Incurred Loss, Earned Premium, Accident Year, and Development Lag using real-world insurance data. We then moved on to predicting future lives based on age and country using demographic data for France and Germany with a Generalized Linear Model (GLM) and a Generalized Additive Model (GAM).
-
-Predictive modeling is a powerful tool in actuarial science, allowing actuaries to forecast future outcomes based on historical data. By applying these techniques, actuaries can gain valuable insights into risk assessment, claim estimation, and premium setting, contributing to the stability and profitability of insurance companies.
-
-Keep practicing and exploring different datasets to enhance your skills in predictive modeling and data analysis in the actuarial field. Happy modeling!
-
-# Resources
+## Resources
 
 -   [R for Actuaries and Data Scientists](https://info.actexmadriver.com/r-for-actuaries)
 -   [Casualty Actuarial Society (CAS)](https://www.casact.org/)
 -   [Statistical Foundations of Actuarial Learning and its Applications](https://link.springer.com/book/10.1007/978-3-031-12409-9)
 -   [R for Actuaries and Data Scientist with Applications to Insurance](https://www.amazon.com/Actuaries-Data-Scientist-Applications-Insurance/dp/164756316X)
+-   [Applied Predictive Modeling](https://link.springer.com/book/10.1007/978-1-4614-6849-3) by Max Kuhn and Kjell Johnson
+-   [An Introduction to Statistical Learning](https://www.statlearning.com/) by Gareth James, Daniela Witten, Trevor Hastie, and Robert Tibshirani
+-   [Generalized Additive Models: An Introduction with R](https://www.amazon.com/Generalized-Additive-Models-Introduction-Statistical/dp/1498728332) by Simon N. Wood

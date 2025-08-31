@@ -1,0 +1,164 @@
+---
+title: "Clustering Countries by Healthy Life Expectancy and Current Health Expenditure"
+subtitle: "ACTEX Learning - AFDP: R Session"
+format: 
+  html:
+    toc: true
+    code-overflow: wrap
+editor: visual
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| echo: false
+library(ggplot2)
+book_theme <- theme_minimal() + 
+  theme(plot.title=element_text(face="bold"))
+ggplot2::theme_set(book_theme)
+```
+
+## Introduction
+
+Clustering is a powerful technique used in data analysis to group similar data points together based on their characteristics. In this example, we will use **K-means clustering** to group countries based on two important health indicators: **Healthy Life Expectancy (HLE)** and **Current Health Expenditure (CHE)** as a percentage of GDP.
+
+## Data Preparation
+
+We will use two datasets from the World Health Organization (WHO).
+
+### Healthy Life Expectancy (HLE)
+
+**Healthy life expectancy (HALE) at birth (years)** is an estimate of the **average number of years that a person can expect to live in "full health"** by taking into account years lived in less than full health due to disease and/or injury.
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+HLE_raw <- read.csv("data/HLE.csv", sep=",")
+HLE_raw %>% dim()
+```
+
+In this dataset, HALE is calculated from life tables and the prevalence of diseases and injuries that cause health loss. The data frame contains `r ncol(HLE_raw)` columns and `r nrow(HLE_raw)` rows belonging to `r length(unique(HLE_raw$Location))` countries/territories across `r length(unique(HLE_raw$Period))` from `r min(unique(HLE_raw$Period))` to `r max(unique(HLE_raw$Period))` for `r length(unique(HLE_raw$Indicator))` indicators:
+
+-   Healthy life expectancy (HALE) at birth (years)
+-   Healthy life expectancy (HALE) at age 60 (years)
+
+We select only **Healthy life expectancy (HALE) at birth (years)** and **Both sexes**, and rename columns to be more user-friendly. This is done to simplify the analysis, and to consider the level of Healthy life expectancy (HALE) for the entire population of each country, across all available years, but you can explore other indicators and dimensions in the dataset.
+
+```{r}
+HLE <- HLE_raw %>% 
+  filter(Indicator=="Healthy life expectancy (HALE) at birth (years)",
+         Dim1=="Both sexes")  %>%  
+  select(Location, FactValueNumeric) %>%
+  rename(country = Location, hle = FactValueNumeric) 
+
+HLE %>% head()
+```
+
+Next, we rename some countries for consistency with other datasets, and calculate the average healthy life expectancy for each country by grouping the data by country and summarizing the healthy life expectancy with the `reframe()` function.
+
+```{r}
+HLE <- HLE %>%
+  mutate(country = recode(country, 
+                          "United Arab Emirates" = "UAE",
+                          "occupied Palestinian territory, including east Jerusalem" = "Palestine", 
+                          "Syrian Arab Republic" = "Syria")) %>%
+  group_by(country) %>% 
+  reframe(hle=round(mean(hle)))
+
+HLE %>%
+  head()
+```
+
+### Current health expenditure (CHE)
+
+**Current health expenditure (CHE) as percentage of gross domestic product (GDP) (%)** is the share of a country's gross domestic product (GDP) that is spent on health care.
+
+```{r}
+CHE_raw <- read.csv("data/CHE.csv", sep=",")
+```
+
+In this dataset, **Current health expenditure (CHE) as percentage of gross domestic product (GDP) (%)** is the share of a country's gross domestic product (GDP) that is spent on health care. The data frame contains `r ncol(CHE_raw)` columns and `r nrow(CHE_raw)` rows belonging to `r length(unique(CHE_raw$Location))` countries/territories across `r length(unique(CHE_raw$Period))` from `r min(unique(CHE_raw$Period))` to `r max(unique(CHE_raw$Period))` for `r length(unique(CHE_raw$Indicator))` indicators:
+
+```{r}
+CHE <- CHE_raw %>% 
+  filter(Indicator=="Current health expenditure (CHE) as percentage of gross domestic product (GDP) (%)")  %>%  
+  select(Location, FactValueNumeric) %>%
+  rename(country = Location, che = FactValueNumeric) 
+  
+
+CHE %>% head
+```
+
+```{r}
+CHE <- CHE %>% 
+  mutate(Country = recode(country, 
+                          "United Arab Emirates"="UAE",
+                          "occupied Palestinian territory, including east Jerusalem"="Palestine", 
+                          "Syrian Arab Republic"="Syria")) %>%
+  group_by(country) %>% 
+  reframe(che=round(sum(che),3))
+
+CHE %>% head
+```
+
+### Jointed dataframe HLE and CHE
+
+```{r}
+CHEHLE <- merge(x = HLE, y = CHE, by = "country") %>% 
+  select(country, hle, che)
+
+CHEHLE %>% head
+```
+
+## Clustering with K-means
+
+> What is K-means clustering?
+
+The goal of the K-means clustering algorithm is to find groups in the data, with the number of groups represented by the variable K. The algorithm works iteratively to assign each data point to one of K groups based on the features that are provided. Data points are clustered based on feature similarity.
+
+```{r}
+A <- CHEHLE[,2:3]
+
+km <- kmeans(A, centers = 5, iter.max = 1000)
+CHEHLE$group <- km$cluster
+
+CHEHLE %>% head
+```
+
+We select a random group of countries (50), to avoid overplotting in the visualization.
+
+```{r}
+set.seed(1111)  # for reproducibility
+
+CHEHLE_sample <- CHEHLE[sample(nrow(CHEHLE), 50) ,]
+```
+
+## Data Visualization
+
+In this scatter plot, each point represents a country, with the x-axis showing healthy life expectancy (HLE) and the y-axis showing current health expenditure (CHE) as a percentage of GDP. The points are colored based on their cluster group, which was determined using the K-means clustering algorithm. The plot also includes vertical and horizontal lines that divide the data into quadrants, which can help to identify patterns or trends in the relationship between HLE and CHE.
+
+```{r}
+ggplot(CHEHLE_sample %>% 
+         mutate(group = as.factor(group)),
+       aes(x = hle, y = che, label = country)) +
+  geom_text(aes(y = che, x = hle, color = group),
+            check_overlap = T,
+            size = 3, 
+            fontface = "bold",
+            show.legend = FALSE)  + 
+  scale_color_brewer(palette = "Set1") +
+  labs(title = "Healthy life expectancy vs. Current health expenditure",
+       x = "Healthy Life Expectancy (years)", 
+       y = "Current Health Expenditure (% GDP per cap)") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5, size = 16))
+```
+
+## Data sources
+
+-   Healthy life expectancy at birth (HLE - latest available year, 2020): <https://www.who.int/data/gho/data/indicators/indicator-details/GHO/gho-ghe-hale-healthy-life-expectancy-at-birth>
+
+-   Current health expenditure (CHE): <https://www.who.int/data/gho/data/indicators/indicator-details/GHO/current-health-expenditure-(che)-as-percentage-of-gross-domestic-product-(gdp)-(-)>

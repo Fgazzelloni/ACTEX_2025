@@ -1,8 +1,6 @@
 ---
-title: "Introduction to R and Basic Data Analysis"
-subtitle: "ACTEX Learning - AFDP: R Session 1.1"
-author: "Federica Gazzelloni and Farid Flici"
-date: "2024/10/03"
+title: "Introduction to R"
+subtitle: "ACTEX Learning - AFDP: R Session"
 format: 
   html:
     toc: true
@@ -29,7 +27,7 @@ If you haven't already, please install R and RStudio on your computer:
 
 \
 
-2.  Download the material for this session from the **Actuarial University Dashboard** using the course link below: <https://www.actuarialuniversity.com/seminar/View/14826>. You'll find a `Session1.zip` file with all the necessary files. Make sure to unzip the file in a location you can easily access.
+2.  Download the material for this session from the [Actuarial University Dashboard](https://www.actuarialuniversity.com/) using the course link below: <https://www.actuarialuniversity.com/seminar/View/15335>. You'll find a `RSession.zip` file with all the necessary files. Make sure to unzip the file in a location you can easily access.
 
 3.  Open RStudio and install the necessary packages with the following command:
 
@@ -40,19 +38,11 @@ install.packages("tidyverse")
 
 ## Introduction to R Programming Environment
 
-R is a programming language and statistical development environment widely used for data analysis, visualization, and statistical modeling. It is an open-source language that provides a wide range of functions and packages specific to data processing and statistics.
+[R](https://www.r-project.org/) is a programming language and statistical development environment widely used for data analysis, visualization, and statistical modeling. It is an open-source language that provides a wide range of functions and packages specific to data processing and statistics.
 
 R is particularly popular among statisticians, data analysts, and data scientists due to its power and flexibility in data processing and analysis. It comes with numerous statistical functions, data manipulation capabilities, and visualization tools, making it a versatile tool for exploring and analyzing data.
 
-## Learning Objectives
-
--   Understand the R environment, basic syntax, data structures
--   Learn essential R functions covering the basics of various actuarial concepts
--   Manipulate and clean data using base R and the {tidyverse} framework
--   Perform basic statistical analysis
--   Gain first level hands-on data visualization experience with {ggplot2}
-
-With a good understanding of these concepts, you can start exploring advanced features of R based on your specific needs.
+[RStudio](https://posit.co/download/rstudio-desktop/) is an integrated development environment (IDE) for R that provides a user-friendly interface for writing, executing, and managing R code. It offers features such as syntax highlighting, code completion, and project management, making it easier to work with R.
 
 ## Resources
 
@@ -67,6 +57,7 @@ You can open a help page for any object that comes with R or with an R package. 
 
 **More Resources:**
 
+-   **The R Manuals**: <https://cran.r-project.org/manuals.html>
 -   **BOOK**: *R for Data Science* by Hadley Wickham and Garrett Grolemund. Available online at <https://r4ds.had.co.nz/>
 -   **CRAN Task View**: *Actuarial Science*: <https://cran.r-project.org/web/views/ActuarialScience.html>
 -   **R/Insurance Series**: *For Everyone in Insurance or Actuarial Science*: <https://www.r-consortium.org/r-insurance-series-for-everyone-in-insurance-or-actuarial-science>

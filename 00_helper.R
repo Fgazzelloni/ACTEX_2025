@@ -1,12 +1,12 @@
 # List both base and recommended packages
+# see what comes with a fresh R installation
 installed.packages(priority = c("base", "recommended"))
 
 search()
 ?search()
 
 # Install the necessary packages
-# Packages can be installed using the install.packages() function
-# if the package is on CRAN (Comprehensive R Archive Network)
+# Packages can be installed using the install.packages() function if the package is on CRAN (Comprehensive R Archive Network)
 # otherwise use devtools::install_github("username/package_name")
 install.packages("tidyverse")
 

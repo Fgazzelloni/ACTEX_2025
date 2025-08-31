@@ -1,0 +1,19 @@
+---
+title: "Conclusion"
+subtitle: "ACTEX Learning - AFDP: R Session"
+format: 
+  html:
+    toc: true
+editor: visual
+execute:
+  warning: false
+  message: false
+---
+
+## Wrapping Up
+
+Throughout this course, we explored the essential skills for applying R in actuarial science, covering data import, manipulation, and visualization, as well as implementing actuarial functions and statistical models. We worked with techniques such as generalized linear models (GLMs) for claim modeling, generalized additive models (GAMs) for trend analysis, and clustering methods for segmenting policyholders or identifying risk patterns.
+
+These approaches form the foundation of modern actuarial practice, supporting accurate predictions, risk assessment, and data-driven decision-making. By combining efficient data handling with robust modeling and exploratory tools, you can enhance both exam preparation and professional work.
+
+Continue practicing with different datasets and methods to deepen your understanding and build confidence in applying these techniques in real-world actuarial contexts.

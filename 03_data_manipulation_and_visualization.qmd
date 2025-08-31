@@ -1,0 +1,262 @@
+---
+title: "Data manipulation and visualization"
+subtitle: "ACTEX Learning - AFDP: R Session"
+format: 
+  html:
+    toc: true
+editor: visual
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| echo: false
+library(ggplot2)
+book_theme <- theme_minimal() + 
+  theme(plot.title=element_text(face="bold"))
+ggplot2::theme_set(book_theme)
+```
+
+## Example 1: Motor Insurance Claims Data
+
+For this example, we will use the French Motor Third-Part Liability datasets: `freMTPL2freq` and `freMTPL2sev`. The datasets contain the frequency and severity of claims for a motor insurance portfolio.
+
+The datasets are from the `CASdatasets` R-package, which provides a collection of datasets for actuarial science used in the book **"Computational Actuarial Science with R"** by Arthur Charpentier and Rob Kaas. We do not need to install the package as the data we need is already available in the `data` folder of this project. For more information on how to install the `CASdatasets` package please check the `helper00.R` file in the project folder.
+
+Data can be accessed by loading it into the R environment with the `load()` function.
+
+```{r}
+# Load necessary libraries
+library(tidyverse)
+```
+
+```{r}
+# freMTPLfreq has been reduced to 1000 rows for demonstration purposes
+load("data/freMTPLfreq_1000.rda")
+load("data/freMTPLsev.rda")
+```
+
+R allows the user to manage different types of data, such as .Rdata, .rda, .rds, .csv, .txt, .xls, .xlsx, among others. The different types of data can be loaded into R using functions like `load()`, `read.csv()`, `read.table()`, `read_excel()`, and others. Each of these types of files occupies a specific format in memory.
+
+The R Data Format Family, usually with extension . rdata or . rda, is a format designed for use with R for storing a complete R workspace or selected "objects" from a workspace in a form that can be loaded back by R. Once the file is loaded into R, the data is stored in the `Environment` as an object. The object can be accessed by its name.
+
+Here we look at the first few rows of each dataset:
+
+```{r}
+head(freMTPLfreq)
+```
+
+```{r}
+head(freMTPLsev)
+```
+
+### Inspecting Data
+
+The `freMTPLfreq` dataset contains the risk features and the claim number, while the `freMTPLsev` dataset contains the claim amount and the corresponding policy ID.
+
+We can use the `glimpse()` function from the `dplyr` package to get a quick overview of the datasets.
+
+```{r}
+glimpse(head(freMTPLfreq))
+```
+
+```{r}
+glimpse(head(freMTPLsev))
+```
+
+Check if there are any missing values in the datasets using the `any()` function. The `is.na()` function checks for missing values in the dataset.
+
+```{r}
+any(is.na(freMTPLfreq));
+any(is.na(freMTPLsev))
+```
+
+### Data Preparation
+
+The two datasets have a common variable, `PolicyID`, which can be used as a key to merge the datasets to create a single dataset that contains both the frequency and severity of claims.
+
+Something to notice is that `PolicyID` is stored as a character variable in the `freMTPLfreq` dataset and as an integer variable in the `freMTPLsev` dataset. So, in order to proceed with merging the two sets, we need to transform the `PolicyID` variable in the `freMTPLfreq` dataset to an integer type.
+
+### Mutate and Merge Data
+
+The `mutate()` function is used to create a new variable, or to make a modification to an existing one, as in this case, to transform `PolicyID` as an integer type.
+
+```{r}
+freMTPLfreq <- freMTPLfreq %>%
+  mutate(PolicyID = as.integer(PolicyID))
+```
+
+We could have done this with base R as well, using the `as.integer()` function.
+
+```{r}
+freMTPLfreq$PolicyID <- as.integer(freMTPLfreq$PolicyID)
+```
+
+The way to use the `$` operator is to access a variable in a data frame. The `class()` function is used to check the class of the modified object.
+
+```{r}
+freMTPLfreq$PolicyID %>% class()
+```
+
+We can now combine the two datasets using the `merge()` function from base R which merges two datasets based on a common variable, in this case, the `PolicyID` variable.
+
+There are other functions that can be used to merge datasets, such as `inner_join()`, `left_join()`, `right_join()`, and `full_join()` from the `dplyr` package, depending on the desired output.
+
+```{r}
+claims_data_raw <- freMTPLfreq %>%
+  merge(freMTPLsev, by = "PolicyID")
+
+claims_data_raw %>% dim()
+```
+
+```{r}
+claims_data_raw %>% names()
+```
+
+```{r}
+claims_data_raw %>%
+  summary()
+```
+
+### Filter and Summarize Data
+
+We can filter the data to include only claims greater than 1000 and summarize the total claims by year. The `group_by()` function is used to group the data by a specific variable, and the `reframe()` function is used to calculate summary statistics for each group.
+
+```{r}
+# Filter data for claims greater than 1000
+high_claims <- claims_data_raw %>% filter(ClaimAmount > 1000)
+```
+
+```{r}
+ggplot(data = high_claims, 
+       aes(x = factor(DriverAge), y = ClaimAmount)) +
+  geom_col() +
+  labs(title = "High Claims by Driver Age",
+       x = "Driver Age",
+       y = "Claim Amount")
+```
+
+### Grouping and Summarize total claims by DriverAge
+
+```{r}
+claims_summary <- claims_data_raw %>%
+  group_by(DriverAge) %>%
+  reframe(TotalClaims = sum(ClaimAmount))
+
+claims_summary
+```
+
+```{r}
+ggplot(data = claims_summary, 
+       aes(x = factor(DriverAge), y = TotalClaims)) +
+  # fix the bar plot
+  geom_col() +
+  labs(title = "Total Claims by Driver Age",
+       x = "Driver Age",
+       y = "Claim Amount")
+```
+
+### Premium Calculation
+
+Let's calculate the `Premium formula` for the claims data. The premium formula is given by:
+
+$$
+\text{Premium} = \frac{\text{projected claims} + \text{fixed expenses}}{1 - \text{expenses as \% of premium}}
+$$ 
+
+We calculate the projected claims as the product of the number of claims (`ClaimNb`) and the amount of claims (`ClaimAmount`). Then, we simulate fixed expenses as a random number between 100 and 500, and the expenses as a percentage of premium between 10% and 30%, with `runif()` functions.
+
+```{r}
+# Setting seed for reproducibility
+set.seed(42) 
+claims_data <- claims_data_raw %>%
+  mutate(
+    # Simulate projected claims between 1000 and 5000
+    projected_claims = ClaimNb * ClaimAmount,  
+    # Simulate fixed expenses between 100 and 500
+    fixed_expenses = runif(n(), 100, 500),      
+    # Simulate expenses percentage between 10% and 30%
+    expenses_as_percent_of_premium = runif(n(), 0.1, 0.3)
+    )
+```
+
+With the `mutate()` function we create the `Premium` variable using the formula provided. The `dim()` function is used to check the dimensions of the dataset.
+
+```{r}
+# Calculate Premium using the given formula
+claims_data <- claims_data %>%
+  mutate(
+    Premium = (projected_claims + fixed_expenses) / (1 - expenses_as_percent_of_premium)
+    )
+
+claims_data %>% dim()
+```
+
+To select specific columns from a dataset we can use the `select()` function from the `dplyr` package. Then, the `head()` function is used to display the first few rows of the dataset.
+
+```{r}
+# View the results
+claims_data %>%
+  select(PolicyID, 
+         projected_claims, 
+         fixed_expenses, 
+         expenses_as_percent_of_premium,
+         Premium) %>%
+  head()
+```
+
+### Visualize Projected Claims vs Premium
+
+```{r}
+ggplot(data = claims_data %>% filter(Premium < 10000), 
+       aes(x = projected_claims, y = Premium)) +
+  # Add points
+  geom_point() +
+  # Add a smooth line
+  geom_smooth()+
+  labs(title = "Projected Claims vs Premium",
+       x = "Projected Claims",
+       y = "Premium")
+```
+
+### Group Data by Age and Calculate Average Premium
+
+Let's check the range of the `DriverAge` variable and group the data by age to calculate the average premium for each age group.
+
+```{r}
+range(claims_data$DriverAge)
+```
+
+Finally, we group the data by 5 years age group and calculate the average premium for each age group using the `cut()` function to create age groups.
+
+```{r}
+claims_data %>%
+  mutate(DriverAge_group = cut_interval(DriverAge, 
+                                        n = 5)) %>%
+  group_by(DriverAge_group) %>%
+  reframe(avg_Premium = mean(Premium))
+```
+
+```{r}
+claims_data_ag <- claims_data %>%
+  mutate(DriverAge_group = cut(DriverAge, 
+                               breaks = c(18, 25, 35, 
+                                          45, 55, 65, 
+                                          75, 85, 95, 99),
+                               include.lowest = TRUE)) %>% 
+  arrange(DriverAge_group) %>% 
+  group_by(DriverAge_group) %>%
+  reframe(avg_Premium = mean(Premium)) 
+
+claims_data_ag
+```
+
+```{r}
+claims_data_ag %>%
+  ggplot(aes(x = DriverAge_group, y = avg_Premium)) +
+  geom_col(fill = "blue") +
+  labs(title = "Average Premium by Age Group",
+       x = "Driver Age Group",
+       y = "Average Premium")
+```
