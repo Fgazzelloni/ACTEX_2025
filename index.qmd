@@ -56,7 +56,7 @@ This program is designed for both aspiring and experienced actuaries who want to
 
 ### Course Outline
 
-This two-hour R-crash course will cover the basics of R programming, with a focus on practical applications relevant to actuarial exams.
+This R-crash course will cover the basics of R programming, with a focus on practical applications relevant to actuarial exams.
 
 -   [Introduction to R](/01_introduction_to_r.html)
 -   [Data types and structures](/02_data_types_and_structures.html)
@@ -66,10 +66,9 @@ This two-hour R-crash course will cover the basics of R programming, with a focu
 
 ### Course Materials
 
-- This Booklet: <https://bookdown.org/federicagazzelloni/ACTEX_2025/>
-- Slides and other files: <https://www.actuarialuniversity.com/seminar/View/15335>
-- Github repository: <https://github.com/Fgazzelloni/ACTEX_2025>
-
+-   This Booklet: <https://bookdown.org/federicagazzelloni/ACTEX_2025/>
+-   Slides and other files: <https://www.actuarialuniversity.com/seminar/View/15335>
+-   Github repository: <https://github.com/Fgazzelloni/ACTEX_2025>
 
 ## About the Providers
 
