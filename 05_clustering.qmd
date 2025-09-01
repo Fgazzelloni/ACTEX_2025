@@ -36,7 +36,8 @@ library(tidyverse)
 ```
 
 ```{r}
-HLE_raw <- read.csv("data/HLE.csv", sep=",")
+# Load the Healthy Life Expectancy (HLE) dataset
+HLE_raw <- readRDS("data/HLE_raw.rds")
 HLE_raw %>% dim()
 ```
 
@@ -77,7 +78,8 @@ HLE %>%
 **Current health expenditure (CHE) as percentage of gross domestic product (GDP) (%)** is the share of a country's gross domestic product (GDP) that is spent on health care.
 
 ```{r}
-CHE_raw <- read.csv("data/CHE.csv", sep=",")
+CHE_raw <- readRDS("data/CHE_raw.rds")
+CHE_raw %>% dim()
 ```
 
 In this dataset, **Current health expenditure (CHE) as percentage of gross domestic product (GDP) (%)** is the share of a country's gross domestic product (GDP) that is spent on health care. The data frame contains `r ncol(CHE_raw)` columns and `r nrow(CHE_raw)` rows belonging to `r length(unique(CHE_raw$Location))` countries/territories across `r length(unique(CHE_raw$Period))` from `r min(unique(CHE_raw$Period))` to `r max(unique(CHE_raw$Period))` for `r length(unique(CHE_raw$Indicator))` indicators:
@@ -118,6 +120,12 @@ CHEHLE %>% head
 > What is K-means clustering?
 
 The goal of the K-means clustering algorithm is to find groups in the data, with the number of groups represented by the variable K. The algorithm works iteratively to assign each data point to one of K groups based on the features that are provided. Data points are clustered based on feature similarity.
+
+To know a bit more about the function, you can check the documentation with the command below:
+
+```         
+?kmeans()
+```
 
 ```{r}
 A <- CHEHLE[,2:3]
@@ -162,3 +170,8 @@ ggplot(CHEHLE_sample %>%
 -   Healthy life expectancy at birth (HLE - latest available year, 2020): <https://www.who.int/data/gho/data/indicators/indicator-details/GHO/gho-ghe-hale-healthy-life-expectancy-at-birth>
 
 -   Current health expenditure (CHE): <https://www.who.int/data/gho/data/indicators/indicator-details/GHO/current-health-expenditure-(che)-as-percentage-of-gross-domestic-product-(gdp)-(-)>
+
+## References
+
+-   World Health Organization (WHO) Global Health Observatory (GHO) data repository: <https://www.who.int/data/gho>
+-   K-means clustering: <https://en.wikipedia.org/wiki/K-means_clustering>

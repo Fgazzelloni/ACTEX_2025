@@ -27,13 +27,15 @@ If you haven't already, please install R and RStudio on your computer:
 
 \
 
-2.  Download the material for this session from the [Actuarial University Dashboard](https://www.actuarialuniversity.com/) using the course link below: <https://www.actuarialuniversity.com/seminar/View/15335>. You'll find a `RSession.zip` file with all the necessary files. Make sure to unzip the file in a location you can easily access.
+2.  Download the material for this session from the [Actuarial University Dashboard](https://www.actuarialuniversity.com/) using the course link below: <https://www.actuarialuniversity.com/seminar/View/15335>. You'll find a `2025 AFDP R Training` folder with all the necessary files. 
 
 3.  Open RStudio and install the necessary packages with the following command:
 
 ```{r}
 #| eval: false
 install.packages("tidyverse")
+install.packages("lifecontingencies")
+install.packages("actuar")
 ```
 
 ## Introduction to R Programming Environment

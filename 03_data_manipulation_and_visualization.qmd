@@ -22,9 +22,9 @@ ggplot2::theme_set(book_theme)
 
 For this example, we will use the French Motor Third-Part Liability datasets: `freMTPL2freq` and `freMTPL2sev`. The datasets contain the frequency and severity of claims for a motor insurance portfolio.
 
-The datasets are from the `CASdatasets` R-package, which provides a collection of datasets for actuarial science used in the book **"Computational Actuarial Science with R"** by Arthur Charpentier and Rob Kaas. We do not need to install the package as the data we need is already available in the `data` folder of this project. For more information on how to install the `CASdatasets` package please check the `helper00.R` file in the project folder.
+The datasets are from the `CASdatasets` R-package, which provides a collection of datasets for actuarial science used in the book **"Computational Actuarial Science with R"** by Arthur Charpentier and Rob Kaas. We do not need to install the package as the dcata is already made available in the `data` folder of this project. 
 
-Data can be accessed by loading it into the R environment with the `load()` function.
+For more information on how to install the `CASdatasets` package please check the `helper00.R` file in the project folder.
 
 ```{r}
 # Load necessary libraries
@@ -33,13 +33,13 @@ library(tidyverse)
 
 ```{r}
 # freMTPLfreq has been reduced to 1000 rows for demonstration purposes
-load("data/freMTPLfreq_1000.rda")
-load("data/freMTPLsev.rda")
+readRDS("data/freMTPLfreq_1000.rds") -> freMTPLfreq
+readRDS("data/freMTPLsev.rds") -> freMTPLsev
 ```
 
-R allows the user to manage different types of data, such as .Rdata, .rda, .rds, .csv, .txt, .xls, .xlsx, among others. The different types of data can be loaded into R using functions like `load()`, `read.csv()`, `read.table()`, `read_excel()`, and others. Each of these types of files occupies a specific format in memory.
+RDS files are R's binary file format for storing a single R object. The `readRDS()` function reads the R object from the file and returns it to the R environment. The `saveRDS()` function can be used to save an R object to a file in RDS format.
 
-The R Data Format Family, usually with extension . rdata or . rda, is a format designed for use with R for storing a complete R workspace or selected "objects" from a workspace in a form that can be loaded back by R. Once the file is loaded into R, the data is stored in the `Environment` as an object. The object can be accessed by its name.
+R allows the user to manage different types of data, such as .Rdata, .rda, .rds, .csv, .txt, .xls, .xlsx, among others. The different types of data can be loaded into R using functions like `load()`, `read.csv()`, `read.table()`, `read_excel()`, and others. Each of these types of files occupies a specific format in memory.
 
 Here we look at the first few rows of each dataset:
 
@@ -125,7 +125,8 @@ We can filter the data to include only claims greater than 1000 and summarize th
 
 ```{r}
 # Filter data for claims greater than 1000
-high_claims <- claims_data_raw %>% filter(ClaimAmount > 1000)
+high_claims <- claims_data_raw %>% 
+  filter(ClaimAmount > 1000)
 ```
 
 ```{r}
@@ -163,7 +164,7 @@ Let's calculate the `Premium formula` for the claims data. The premium formula i
 
 $$
 \text{Premium} = \frac{\text{projected claims} + \text{fixed expenses}}{1 - \text{expenses as \% of premium}}
-$$ 
+$$
 
 We calculate the projected claims as the product of the number of claims (`ClaimNb`) and the amount of claims (`ClaimAmount`). Then, we simulate fixed expenses as a random number between 100 and 500, and the expenses as a percentage of premium between 10% and 30%, with `runif()` functions.
 

@@ -82,27 +82,28 @@ write.csv(df, "data/medmal_pos.csv")
 ```
 
 ```{r}
-df <- read.csv("data/medmal_pos.csv")
+medmal_pos <- read.csv("data/medmal_pos.csv")
 ```
 :::
 
 ### Data Cleaning and Preparation
 
 ```{r}
-dim(df);
-df %>% head() %>% glimpse()
+dim(medmal_pos);
+medmal_pos %>% head() %>% glimpse()
 ```
 
 ```{r}
-df %>%
-  select(IncurLoss_F2, CumPaidLoss_F2, BulkLoss_F2, EarnedPremNet_F2) %>%
+medmal_pos %>%
+  select(IncurLoss_F2, CumPaidLoss_F2, 
+         BulkLoss_F2, EarnedPremNet_F2) %>%
   summary()
 ```
 
 We can use the `summary()` function to get a quick overview of the data, including the mean, median, minimum, and maximum values for each variable, or the `count()` function to count the number of observations in the data.
 
 ```{r}
-df %>%
+medmal_pos %>%
   select(DevelopmentLag) %>%
   summary()
 ```
@@ -110,7 +111,7 @@ df %>%
 Then we create a tailored dataset containing only the claims with a development lag of 5 years or more:
 
 ```{r}
-lag5plus <- df %>%
+lag5plus <- medmal_pos %>%
   filter(DevelopmentLag >= 5) %>%
   select(GRNAME, AccidentYear, IncurLoss_F2, 
          CumPaidLoss_F2, EarnedPremNet_F2, DevelopmentLag) %>%
@@ -145,7 +146,7 @@ We create a `scatterplot` for representing the relationship between `IncurLoss` 
 ```{r}
 #| layout-ncol: 2
 # Plot 1
-ggplot(df, 
+ggplot(medmal_pos, 
        aes(x = IncurLoss_F2, y = CumPaidLoss_F2)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE, color = "red") +
@@ -384,32 +385,25 @@ ggplot(lag5plus,
 x = "Incurred Loss", y = "Cumulative Paid Loss")
 ```
 
-## Bonus Example 2: Predicting Lives Based on Age and Country
+## Example 2: Predicting Lives Based on Age and Country
 
-The data for this example is from the `lifecontingencies` package, which contains various datasets related to actuarial science. You don't need to install the package, as data is made available in the `data` folder of the lesson as `.RData` file.
+The data for this example is from the `lifecontingencies` package, which contains various datasets related to actuarial science.
+
+```{r}
+#| eval: false
+install.packages("lifecontingencies")
+```
+
+
+```{r}
+library(lifecontingencies)
+```
 
 We will use demographic data for France and Germany to build a linear regression model to predict future lives based on age and country.
 
 ```{r}
-#| eval: false
-#| echo: false
-#| include: false
-# Here is shown how to install the package if is not already installed
-# and load the library and data
-if (!requireNamespace("lifecontingencies", quietly = TRUE)) {
-  install.packages("lifecontingencies")
-}
-library(lifecontingencies)
-
 data("demoFrance")
 data("demoGermany")
-save(demoFrance, demoGermany, file = "data/demo_data.RData")
-```
-
-### Data Collection
-
-```{r}
-load("data/demo_data.RData")
 ```
 
 ### Data Cleaning and Preparation
@@ -620,7 +614,6 @@ To further understand how the model works, you can explore the `predict()` funct
 ?predict()
 ```
 :::
-
 
 ## Resources
 

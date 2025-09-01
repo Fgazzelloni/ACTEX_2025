@@ -66,9 +66,10 @@ This two-hour R-crash course will cover the basics of R programming, with a focu
 
 ### Course Materials
 
--   Slides and compressed files: <https://www.actuarialuniversity.com/seminar/View/15335>
--   Github repository: <https://github.com/Fgazzelloni/ACTEX_2025>
--   Booklet: <https://github.com/Fgazzelloni/ACTEX_2025>
+- This Booklet: <https://bookdown.org/federicagazzelloni/ACTEX_2025/>
+- Slides and other files: <https://www.actuarialuniversity.com/seminar/View/15335>
+- Github repository: <https://github.com/Fgazzelloni/ACTEX_2025>
+
 
 ## About the Providers
 
