@@ -27,7 +27,7 @@ If you haven't already, please install R and RStudio on your computer:
 
 \
 
-2.  Download the material for this session from the [Actuarial University Dashboard](https://www.actuarialuniversity.com/) using the course link below: <https://www.actuarialuniversity.com/seminar/View/15335>. You'll find a `2025 AFDP R Training` folder with all the necessary files. 
+2.  Download the material for this session from the [Actuarial University Dashboard](https://www.actuarialuniversity.com/) using the course link below: <https://www.actuarialuniversity.com/seminar/View/15335>. You'll find a `2025 AFDP R Training` folder with all the necessary files.
 
 3.  Open RStudio and install the necessary packages with the following command:
 
@@ -60,6 +60,6 @@ You can open a help page for any object that comes with R or with an R package. 
 **More Resources:**
 
 -   **The R Manuals**: <https://cran.r-project.org/manuals.html>
--   **BOOK**: *R for Data Science* by Hadley Wickham and Garrett Grolemund. Available online at <https://r4ds.had.co.nz/>
+-   **R for Data Science** by Hadley Wickham and Garrett Grolemund. Available online at <https://r4ds.had.co.nz/>
 -   **CRAN Task View**: *Actuarial Science*: <https://cran.r-project.org/web/views/ActuarialScience.html>
 -   **R/Insurance Series**: *For Everyone in Insurance or Actuarial Science*: <https://www.r-consortium.org/r-insurance-series-for-everyone-in-insurance-or-actuarial-science>

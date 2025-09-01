@@ -20,11 +20,15 @@ ggplot2::theme_set(book_theme)
 
 ## Getting into Practice with R
 
-`Data manipulation` is a fundamental skill in the field of `data science`. It involves the process of `transforming`, `organizing`, and `cleaning` raw data to make it suitable for analysis and visualization. `R` can be used in tasks such as determining `premium rates` for mortality and morbidity products, `evaluating the probability` of financial loss or return, providing business `risk consulting`, and `planning` for pensions and retirement. In essence, `R` is a powerful tool for actuaries and data scientists to perform complex data analysis and modeling.
+`Data manipulation` is a fundamental skill in the field of `data science` and the `actuarial profession`. It involves the process of `transforming`, `organizing`, and `cleaning` raw data to make it suitable for tailored analysis and visualization. 
+
+In the actuarial context, tools like `R` are invaluable for tasks such as: calculating `premium rates` for mortality and morbidity products, `evaluating the probability` of financial loss or return, providing business `risk consulting`, and `planning` for pensions and retirement. In essence, `R` is a powerful tool for actuaries and data scientists to perform complex data analysis and modeling.
 
 ## R Packages
 
-R packages are collections of functions, data, and compiled code in a well-defined format. They are stored in a directory called `library`. A fresh R installation includes a set of packages that are loaded automatically when R starts. These packages are referred to as the base packages. The base packages are always available, and they do not need to be loaded explicitly.
+R is equipped with a vast ecosystem of packages that extend its functionality.
+
+R packages are collections of functions, data, and compiled code in a well-defined format. They are stored in a directory called `library`. A fresh R installation includes a set of packages that are loaded automatically when R starts. These packages are referred to as the `base` packages. The base packages are always available, and they do not need to be loaded explicitly.
 
 Others packages are available for download from [CRAN (Comprehensive R Archive Network)](https://cran.r-project.org/web/packages/available_packages_by_name.html) or other repositories, such as [GitHub](https://github.com/) usually for package development versions. To install a package which is stored on CRAN, we can use the `install.packages("")` function. To load a package, use the `library()` function.
 
@@ -109,7 +113,7 @@ Useful base R function:
 #| eval: false
 name <- function(variables) {
   # Code block
-}
+  }
 ```
 
 ```{r}
@@ -117,7 +121,7 @@ x <- c(1, 2, 3, 4, 5)
 
 avg <- function(x) {
   sum(x)/length(x)
-}
+  }
 ```
 
 ```{r}
@@ -125,15 +129,32 @@ avg(x);
 mean(x)
 ```
 
-## Essential Data Preparation Techniques: Wrangling, Manipulation, and Transformation
+## Essential Data Preparation Techniques
 
-Data wrangling, manipulation, and transformation are essential techniques for preparing and refining data for analysis.
+Data wrangling, manipulation, and transformation are essential techniques for preparing and refining data for analysis. A series of steps to ensure data quality by handling inconsistencies, filling gaps, correcting errors, removing duplicates, and merging dataset. Common data preparation tasks include:
 
--   **Data wrangling** involves cleaning raw data—handling missing values, correcting errors, and merging datasets—to ensure accuracy and consistency.
--   **Data manipulation** builds on this by adjusting, filtering, and transforming specific aspects of the data, such as selecting relevant columns, filtering rows based on conditions, and creating new variables.
--   **Data transformation** goes deeper by reshaping the structure of the data (e.g., converting between wide and long formats), normalizing values, or applying mathematical operations like log transformations to ensure that the data is suitable for complex analysis or modeling.
+- Wrangling: 
 
-These processes, often performed using R packages like dplyr, tidyr, and data.table, are crucial steps in converting raw, disorganized data into meaningful insights. Together, they form the foundation for effective data analytics, which uses cleaned and well-structured data to perform descriptive, predictive, and inferential analyses.
+  - Handling missing values
+  - Reshaping data (wide ↔ long)
+  - Removing duplicates
+  - Standardizing formats (e.g., dates, units)
+  - Joining multiple datasets
+
+- Manipulation:
+
+  - Selecting and filtering rows/columns (select(), filter())
+  - Sorting (arrange())
+  - Grouping and summarizing (group_by(), summarise())
+
+- Transformation:
+
+  - Normalization or scaling (e.g., z-scores, min-max)
+  - Encoding categorical variables
+  - Creating new variables (mutate())
+  - Applying functions (e.g., log, square root)
+
+These processes, often performed using R packages like {dplyr}, {tidyr}, and {data.table}, are crucial steps in converting raw, disorganized data into meaningful insights. Together, they form the foundation for effective data analytics, which uses cleaned and well-structured data to perform descriptive, predictive, and inferential analyses.
 
 As an example, consider a dataset with columns for `ID`, `Age`, and `Salary`. We can remove rows with missing values in the `Age` column and create a new column called `IncomeGroup` based on the `Salary` column.
 
@@ -174,15 +195,10 @@ cleaned_data %>%
   janitor::clean_names() 
 ```
 
-# Summary
+R is a powerful tool for actuaries and data scientists, it offers a wide range of functions and packages for data analysis, modeling, and visualization. By mastering R programming, actuaries can enhance their analytical skills, improve decision-making, and drive innovation in the insurance industry.
 
-In this lesson, we have introduced the basics of R programming, including functions, data types, and syntax. We have explored data manipulation techniques using base R functions and the `tidyverse` set of packages. We have also worked with simulated and real-world claims data to perform data wrangling, manipulation, and visualization.
 
-R is a powerful tool for actuaries and data scientists, offering a wide range of functions and packages for data analysis, modeling, and visualization. By mastering R programming, actuaries can enhance their analytical skills, improve decision-making, and drive innovation in the insurance industry.
-
-In the next lesson, we will delve deeper into data analysis and modeling techniques, exploring predictive modeling using R.
-
-# Resources
+## Resources
 
 -   Charpentier, A., & Kaas, R. (2014). [Computational Actuarial Science with R. CRC Press](https://www.amazon.it/Computational-Actuarial-Science-Arthur-Charpentier/dp/1466592591)
 -   Wickham, H. (2016). [ggplot2: Elegant Graphics for Data Analysis](https://ggplot2-book.org/)
