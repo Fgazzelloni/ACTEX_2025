@@ -2,6 +2,7 @@
 title: "Introduction to R and Basic Data Analysis for Actuarial Science"
 description: "Actuarial Faculty Development Program 2025 - ACTEX Learning"
 date: "2025/09/02"
+image: "images/actex_logo.png"
 format:
   html:
     toc: true

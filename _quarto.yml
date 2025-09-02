@@ -2,11 +2,19 @@ project:
   type: website
 
 website:
+  open-graph: true
   page-navigation: true
   back-to-top-navigation: true
   title: "Introduction to R and Basic Data Analysis for Actuarial Science"
   site-url: "https://bookdown.org/federicagazzelloni/ACTEX_2025/" 
   repo-url: "https://github.com/Fgazzelloni/ACTEX_2025"
+  favicon: images/actex_logo.png
+  announcement: 
+    icon: info-circle
+    dismissable: true
+    content: "**Alert** - The course will be held on Tuesday, 2 September 2025 at 15:00 CEST (UTC+2)."
+    type: primary
+    position: below-navbar
   repo-actions: [edit, issue]
   
   

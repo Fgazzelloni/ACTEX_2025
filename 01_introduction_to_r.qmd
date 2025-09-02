@@ -1,5 +1,5 @@
 ---
-title: "Introduction to R"
+title: "Introduction to R <img src='images/r-logo.png' style='float:right; height:100px; margin-right:100px;'>"
 subtitle: "ACTEX Learning - AFDP: R Session"
 format: 
   html:
@@ -27,7 +27,7 @@ If you haven't already, please install R and RStudio on your computer:
 
 \
 
-2.  Download the material for this session from the [Actuarial University Dashboard](https://www.actuarialuniversity.com/) using the course link: <https://www.actuarialuniversity.com/seminar/View/15335>. 
+2.  Download the material for this session from the [Actuarial University Dashboard](https://www.actuarialuniversity.com/) using the course link: <https://www.actuarialuniversity.com/seminar/View/15335>.
 
 3.  Open RStudio and install the necessary packages with the following command:
 
