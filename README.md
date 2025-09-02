@@ -1,4 +1,4 @@
-# ACTEX Learning 2025: Introduction to R and Basic Data Analysis
+# ACTEX Learning 2025: Introduction to <img src='images/r-logo.png' style='height:40px;'> and Basic Data Analysis 
 
 This is the material for **2025 R for Actuaries course** supported by **ACTEX Learning**: <https://www.actexlearning.com/> and <https://www.actuarialuniversity.com/>.
 
